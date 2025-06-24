@@ -42,6 +42,10 @@ export default defineConfig(({ mode }) => {
           compress: {
             drop_console: true,
             drop_debugger: true
+          },
+          mangle: true,
+          format: {
+            comments: false
           }
         },
         chunkSizeWarningLimit: 1000
