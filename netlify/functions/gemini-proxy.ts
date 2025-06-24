@@ -1,7 +1,7 @@
 import { GoogleGenAI, GenerateContentResponse, Part, HarmCategory, HarmBlockThreshold } from "@google/genai";
 import type { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 
-const API_KEY = process.env.API_KEY;
+const API_KEY = process.env.VITE_GEMINI_API || process.env.API_KEY || process.env.GEMINI_API_KEY;
 const GEMINI_API_MODEL_TEXT = 'gemini-2.5-flash-preview-04-17';
 
 const GEMINI_SAFETY_SETTINGS = [
