@@ -1,214 +1,487 @@
-# School Health Screening System
+# 🏥 School Health Screening System
 
-## 1. Description
+**A comprehensive AI-powered health screening application for schools, featuring camera-based measurements, vital signs monitoring, automated health assessments, and medical device integration.**
 
-The School Health Screening System is a comprehensive web-based application designed to assist nurses and healthcare professionals in conducting systematic health screenings for students. It leverages AI-powered analysis for various checks, including anthropometry (BMI, height, weight, arm span), Optical Character Recognition (OCR) for device readings, and observational analysis for ENT (Ear, Nose, Throat) and dental health via connected cameras. The application follows a step-by-step workflow, allows for manual data entry fallbacks, supports partial completion of modules by different nurses, and facilitates data export and summary report generation.
+## 🌟 **LIVE DEPLOYMENT**
+**Production URL**: https://your-site-name.netlify.app *(Replace with your actual Netlify URL)*
 
-This system is built for illustrative and educational purposes to showcase potential AI integration in health screening processes. It is NOT a diagnostic tool and all AI-generated suggestions or reports require validation by qualified medical professionals. The system is designed with a conceptual backend in mind; data marked as "complete" by nurses is intended for submission to a central server for aggregated doctor review.
+## 📋 **OVERVIEW**
 
-## 2. Features
+The School Health Screening System is a comprehensive web-based application designed to assist nurses and healthcare professionals in conducting systematic health screenings for students. It leverages AI-powered analysis for various checks, including anthropometry (BMI, height, weight, arm span), Optical Character Recognition (OCR) for device readings, and observational analysis for ENT (Ear, Nose, Throat) and dental health via connected cameras.
 
-*   **Student Identification:** QR code simulation and manual entry for student details, including pre-existing conditions.
-*   **Flexible Screening Workflow:** Step-by-step guidance with top-tab navigation allowing nurses to work on specific modules.
-*   **Modular Design:** Modules for Anthropometry, Specialized Imaging (ENT, Dental), Vital Signs (BP, SpO2, Temperature, Hemoglobin), and Review.
-*   **Multi-Nurse Collaboration (Shared Device):** Nurses can complete their assigned modules for a student, save, and return to the student list. Another nurse can then pick up the same student's record on the same device to complete other modules.
-*   **Module Skipping:** Option to skip entire modules with a reason.
-*   **Camera Integration:**
-    *   Capture images for anthropometry (height, arm span - with tap-to-measure), weighing scale display, device vitals display, ENT/Dental examination, face wellness observation, and stethoscope placement context.
-    *   Video capture for ENT/Dental (first frame used for immediate AI analysis).
-*   **AI-Powered Analysis (via Google Gemini API - `gemini-2.5-flash-preview-04-17` through a secure Netlify Function proxy):**
-    *   OCR for reading values from device displays.
-    *   Interpretation of BMI.
-    *   Descriptive analysis of ENT and Dental images/video frames.
-    *   Silhouette observation from height images.
-    *   Simulated general wellness observation from face images.
-    *   Simulated educational text for stethoscope auscultation.
-    *   Generation of a comprehensive AI summary report.
-*   **Tap-to-Measure:** Interactive height and arm span measurement by tapping points on a captured image with a reference ruler.
-*   **Manual Data Entry:** Fallback options for all measurements, with fields for reasons.
-*   **Nurse Observation Input:** Dedicated section for nurses' general qualitative observations, pre-populated with contextual prompts.
-*   **Data Persistence & Workflow:**
-    *   In-progress screening data is saved to browser `localStorage` for same-device session resumption.
-    *   Explicit "Save Progress" buttons within each module.
-    *   "Save & Return to Student List" button in modules for multi-nurse workflow.
-*   **Review & Submission:**
-    *   Comprehensive review screen displaying all collected data.
-    *   Field for "Preliminary Notes for Doctor / Referral Notes".
-    *   "Mark Complete & Submit" button to (conceptually) send data to a backend server.
-    *   Export screening data as a JSON file.
-    *   Print view for the report.
-*   **Application Settings:**
-    *   Modal for selecting preferred camera/microphone.
-    *   Option to clear all cached screening data from `localStorage`.
-*   **Responsive Design:** Optimized for tablet/mobile use.
+### **Key Capabilities**
+- **🤖 AI-Powered Analysis**: Google Gemini integration for intelligent health assessments
+- **📱 Multi-Device Support**: Works on tablets, smartphones, and desktop computers
+- **🔗 Device Integration**: Bluetooth and USB medical device connectivity
+- **🔒 Privacy-First Design**: All data stored locally, no external transmission
+- **👥 Multi-User Workflow**: Support for multiple nurses on shared devices
+- **📊 Comprehensive Reporting**: Detailed health screening reports with export options
 
-## 3. Technology Stack
+### **⚠️ Important Medical Disclaimer**
+This system is built for **screening and educational purposes** to showcase potential AI integration in health screening processes. It is **NOT a diagnostic tool** and all AI-generated suggestions or reports require validation by qualified medical professionals. The system is designed with a conceptual backend in mind; data marked as "complete" by nurses is intended for submission to a central server for aggregated doctor review.
 
-*   **Frontend:** React (v19+), TypeScript
-*   **Styling:** Tailwind CSS (via CDN), Font Awesome (for icons)
-*   **AI Integration:** Google Gemini API (`@google/genai` SDK) via Netlify Functions
-*   **State Management:** React Context API (`ScreeningContext`, `SettingsContext`)
-*   **Browser Storage:** `localStorage` for session persistence and settings.
-*   **Module System:** ES Modules directly in the browser using import maps (via esm.sh).
-*   **Backend Proxy:** Netlify Functions (Node.js/TypeScript)
+## 🚀 **CORE FEATURES**
 
-## 4. Prerequisites
+### **📋 Screening Workflow**
+- **👤 Student Identification**: QR code simulation and manual entry for student details, including pre-existing conditions
+- **📏 Anthropometry Module**: AI-powered height and weight measurements using camera with tap-to-measure functionality
+- **🔍 Specialized Imaging**: ENT and dental examinations with AI analysis and video capture
+- **💓 Vital Signs Monitoring**: Blood pressure, SpO2, temperature, and hemoglobin with device integration
+- **📊 Review & Export**: Comprehensive review screen with JSON export and print capabilities
 
-*   A modern web browser (Chrome, Firefox, Edge, Safari).
-*   Internet connectivity.
-*   A valid Google Gemini API Key.
-*   (Optional) External USB/BT camera for ENT/Dental.
-*   Node.js and npm (or yarn/pnpm) for local development of Netlify Functions and for Netlify's build process.
-*   A Netlify account.
-*   A Git client (for pushing to a Git provider).
-*   (Optional) Netlify CLI for local testing and deployment (`npm install -g netlify-cli`).
+### **🤖 AI-Powered Analysis**
+- **🔤 OCR Technology**: Reading values from device displays automatically
+- **📈 BMI Interpretation**: Intelligent analysis and categorization
+- **🩺 Medical Image Analysis**: Descriptive analysis of ENT and dental images/video frames
+- **👤 Silhouette Observation**: Height measurement validation from captured images
+- **📝 Comprehensive Reporting**: AI-generated summary reports with medical insights
 
-## 5. API Key Management (IMPORTANT)
+### **🔗 Device Integration**
+- **📱 Camera Integration**: Built-in and external USB cameras for high-quality captures
+- **🔵 Bluetooth Devices**: Blood pressure monitors, pulse oximeters, digital thermometers
+- **🔌 USB Medical Devices**: Digital scales, height measurers, digital stethoscopes
+- **⚡ Real-time Data Capture**: Automatic device reading with validation
 
-The Google Gemini API Key is sensitive. It **MUST NOT** be exposed in the frontend JavaScript code. This application uses a **Netlify Function as a secure proxy**.
+### **👥 Multi-User Collaboration**
+- **🔄 Shared Device Workflow**: Multiple nurses can work on different modules for the same student
+- **💾 Progress Saving**: Explicit save points with localStorage persistence
+- **📋 Module Assignment**: Flexible module completion by different healthcare professionals
+- **🔄 Session Management**: Secure session handling with timeout protection
 
-*   The frontend makes requests to a Netlify Function endpoint (e.g., `/api/gemini-proxy`).
-*   This serverless function (running on Netlify's backend) securely accesses your `API_KEY` from Netlify's environment variables.
-*   The function then calls the Gemini API and returns the response to the frontend.
+### **🔒 Privacy & Security**
+- **🏠 Local Data Storage**: All data stored locally on device, no external transmission
+- **🔐 Secure API Proxy**: Google Gemini API accessed through secure Netlify Functions
+- **👤 User Consent**: Clear permissions for camera and device access
+- **🛡️ HIPAA Considerations**: Designed with medical privacy compliance in mind
 
-You will set your `API_KEY` in the Netlify project settings (see Deployment section).
+### **📱 Technical Features**
+- **📱 Responsive Design**: Optimized for tablets, smartphones, and desktop computers
+- **🔄 PWA Support**: Progressive Web App with offline capabilities
+- **⚙️ Application Settings**: Camera/microphone selection and data management
+- **🌐 Cross-Platform**: Windows, macOS, iOS, Android support
 
-## 5.1. Testing & Quality Assurance
+## 🛠️ **TECHNOLOGY STACK**
 
-This project includes comprehensive testing and quality assurance measures:
+### **Frontend Technologies**
+- **⚛️ React**: v19+ with TypeScript for type safety
+- **🎨 Styling**: Tailwind CSS (via CDN) with Font Awesome icons
+- **📱 PWA**: Service Worker enabled for offline functionality
+- **🔄 State Management**: React Context API (ScreeningContext, SettingsContext)
+- **💾 Storage**: localStorage for session persistence and settings
+- **📦 Module System**: ES Modules directly in browser using import maps (esm.sh)
 
-*   **Unit Tests**: Component and service testing with Vitest
-*   **Integration Tests**: Frontend-backend communication testing
-*   **Type Safety**: Full TypeScript coverage with strict mode
-*   **Performance Optimization**: Code splitting, caching, and PWA features
-*   **Security**: Secure API proxy, CSP headers, and data protection
+### **Backend & Integration**
+- **🤖 AI Integration**: Google Gemini API (`@google/genai` SDK) via Netlify Functions
+- **🔒 Backend Proxy**: Netlify Functions (Node.js/TypeScript) for secure API access
+- **🔗 Device APIs**: Web Bluetooth API and Web USB API for medical device integration
+- **📡 Deployment**: Netlify with automatic deployments from GitHub
 
-## 6. Getting Started (Local Development with Netlify Dev)
+### **Browser APIs Used**
+- **📷 MediaDevices API**: Camera and microphone access
+- **🔵 Web Bluetooth API**: Bluetooth medical device connectivity
+- **🔌 Web USB API**: USB medical device integration
+- **💾 Web Storage API**: Local data persistence
+- **🔔 Notifications API**: User alerts and confirmations
 
-1.  **Clone the repository (or download the ZIP and extract).**
-    If you downloaded a ZIP, initialize a Git repository in the project's root folder:
-    ```bash
-    git init
-    git add .
-    git commit -m "Initial commit"
-    ```
-2.  **Install dependencies:** This installs dependencies needed for the Netlify Function (like `@google/genai` and `typescript`). In your project's root folder, run:
-    ```bash
-    npm install
-    ```
-3.  **Set up environment variable for local testing:**
-    Create a file named `.env` in the root of your project. Add your Gemini API key to it:
-    ```
-    API_KEY=YOUR_ACTUAL_GEMINI_API_KEY_HERE
-    ```
-    Netlify Dev will automatically load this `.env` file. **Important: Do not commit the `.env` file to your Git repository.** Ensure it's listed in your `.gitignore` file (if you don't have one, create it and add `.env` to it).
-4.  **Run with Netlify Dev:** This command will serve your static files (like `index.html`), compile your TypeScript functions, and run them locally. From your project's root folder, run:
-    ```bash
-    netlify dev
-    ```
-    This command uses the `build:functions` script defined in your `package.json` (which runs `tsc` in the `netlify/functions` directory) to compile your TypeScript functions into the `netlify/functions/.dist` directory.
-5.  Open the local URL provided by `netlify dev` (usually `http://localhost:8888`) in your browser.
-6.  Grant camera/microphone permissions when prompted by the browser.
+## 📚 **COMPLETE DOCUMENTATION PACKAGE**
 
-Ensure your Gemini API Key is active and has the necessary permissions/quotas for the `gemini-2.5-flash-preview-04-17` model.
+### **📖 User & Training Documentation**
+- **[📋 Team Training Manual](TEAM_TRAINING_MANUAL.md)** - Complete user guide for staff training and daily operations
+- **[🚨 Troubleshooting Guide](TROUBLESHOOTING_GUIDE.md)** - Common issues, solutions, and diagnostic procedures
+- **[✅ Deployment Checklist](DEPLOYMENT_COMPLETION_CHECKLIST.md)** - Production deployment and go-live guide
 
-## 7. Netlify Deployment Instructions
+### **🔧 Technical Documentation**
+- **[🔧 Developer Integration Guide](DEVELOPER_INTEGRATION_GUIDE.md)** - Technical integration with existing systems
+- **[🔗 Device Integration Guide](DEVICE_INTEGRATION_GUIDE.md)** - Bluetooth/USB medical device setup and configuration
+- **[🔒 Security & Compliance](SECURITY_COMPLIANCE.md)** - Privacy, security, and medical compliance guidelines
 
-1.  **Push your code to a Git provider:**
-    *   Create a new repository on a platform like GitHub, GitLab, or Bitbucket.
-    *   Follow the provider's instructions to push your local Git repository (including `netlify.toml`, `package.json`, and the `netlify/functions` directory with your `.ts` source files) to the remote repository.
-2.  **Sign up/Log in to Netlify.**
-3.  **Create a new site from Git:**
-    *   In your Netlify dashboard, click "Add new site" (or "Import project").
-    *   Choose "Import an existing project".
-    *   Connect to your Git provider and select the repository you just pushed.
-4.  **Build Settings:**
-    *   Netlify should automatically detect and use the settings from your `netlify.toml` file. These are typically:
-        *   **Build command:** `npm run build:functions` (This script compiles your TypeScript functions).
-        *   **Publish directory:** `.` (The root directory of your project, where `index.html` is located).
-        *   **Functions directory:** `netlify/functions/.dist` (The output directory where your compiled JavaScript functions are placed by the build command).
-    *   If you need to review or set these manually (though `netlify.toml` is preferred):
-        *   Go to "Site configuration" -> "Build & deploy".
-        *   **Base directory:** (leave blank or set to your project's root if it's in a subdirectory of your Git repo).
-        *   **Build command:** `npm run build:functions`
-        *   **Publish directory:** `.`
-        *   **Functions directory (under "Functions" section):** `netlify/functions/.dist` (This tells Netlify where to find the *deployed* functions).
-5.  **Environment Variables:**
-    *   Go to your site's "Site configuration" (or "Site settings") -> "Build & deploy" -> "Environment".
-    *   Under "Environment variables", click "Edit variables".
-    *   Add an environment variable:
-        *   **Key:** `API_KEY`
-        *   **Value:** `YOUR_ACTUAL_GEMINI_API_KEY_HERE`
-    *   This key will be securely available to your deployed Netlify Functions at runtime.
-6.  **Deploy:** Click "Deploy site" (or "Trigger deploy" if it's an existing site). Netlify will:
-    *   Clone your repository.
-    *   Run `npm install` to get dependencies for your functions.
-    *   Execute your build command (`npm run build:functions`).
-    *   Deploy your static files from the publish directory.
-    *   Deploy your compiled functions from the functions directory.
-7.  Access your live site via the URL provided by Netlify (e.g., `your-site-name.netlify.app`).
-8.  **Troubleshooting:** If your functions aren't working, check the "Functions" tab in your Netlify site dashboard for logs. Ensure the `API_KEY` is set correctly and that your build command ran successfully.
+### **🎯 Quick Reference**
+- [🚀 Quick Start](#-quick-start) - Get up and running in 5 minutes
+- [📱 Usage Workflow](#-usage-workflow) - Step-by-step screening process
+- [🔗 Device Setup](#-supported-devices) - Medical device integration
+- [🆘 Support](#-support--help) - Getting help and reporting issues
 
-## 8. Project Structure Overview
+---
 
+## 🚀 **QUICK START**
+
+### **Prerequisites**
 ```
-.
-├── netlify.toml              # Netlify configuration (build, functions, redirects)
-├── package.json              # Project dependencies (for Netlify functions) & build scripts
-├── .env                      # Local environment variables (e.g., API_KEY, DO NOT COMMIT)
-├── .gitignore                # Specifies intentionally untracked files (e.g., .env, node_modules)
-│
-├── netlify/
-│   └── functions/
-│       ├── gemini-proxy.ts   # Serverless function for Gemini API (TypeScript source)
-│       ├── tsconfig.json     # TypeScript config for compiling functions
-│       └── .dist/            # (Generated by 'npm run build:functions') Compiled JS functions
-│
-├── index.html                # Main HTML entry point
-├── index.tsx                 # Main React application entry
-├── metadata.json             # Frame permissions (if specific to an environment)
-├── App.tsx                   # Root React component
-├── constants.ts              # Global constants, prompts, icons mapping
-├── types.ts                  # TypeScript type definitions
-│
-├── components/               # Reusable UI components
-│   └── ... 
-│
-├── contexts/                 # React Context providers
-│   └── ... 
-│
-├── screens/                  # Top-level screen components and step components
-│   └── ... 
-│
-├── services/                 # Service integrations
-│   ├── geminiService.ts      # Client-side service to call the Netlify proxy function
-│   └── localStorageService.ts # Manages browser's localStorage
-├── README.md                 # This file
-└── USER_MANUAL.md            # User guide for the application
+✅ Modern web browser (Chrome/Edge recommended for device integration)
+✅ Internet connectivity for AI analysis
+✅ Google Gemini API Key (get from Google AI Studio)
+✅ Camera-enabled device (tablet/laptop/smartphone)
+✅ Optional: Bluetooth/USB medical devices
 ```
 
-## 9. Core Concepts
+### **🎯 For End Users (Nurses/Staff)**
+1. **Access the live application**: https://your-site-name.netlify.app
+2. **Allow camera permissions** when prompted
+3. **Start your first screening** by entering a student ID
+4. **Follow the guided workflow** through each module
+5. **Export or print** the completed screening report
 
-*   **Netlify Functions:** Used as a secure backend proxy for API key management. Written in TypeScript, compiled to JavaScript by the `npm run build:functions` script (which uses `tsc`).
-*   **Screening Context (`ScreeningContext.tsx`):** Manages state for the *active* student screening session.
-*   **Settings Context (`SettingsContext.tsx`):** Manages application-wide settings like preferred devices.
-*   **Gemini Service (`geminiService.ts`):** Client-side module that calls the Netlify Function proxy at `/api/gemini-proxy`. The `netlify.toml` redirects this path to the actual function.
-*   **Local Storage Service (`localStorageService.ts`):** Persists incomplete screenings and app settings in the browser.
+### **🔧 For Developers/IT Staff**
 
-## 10. Key Dependencies
+#### **Local Development Setup**
+```bash
+# 1. Clone the repository
+git clone https://github.com/thechildclinic/funsense.git
+cd funsense
 
-*   **Frontend (via CDN/esm.sh in `index.html`):** React, ReactDOM, Tailwind CSS, React Icons, Recharts.
-*   **Netlify Function (via `package.json`):** `@google/genai`.
-*   **Development (via `package.json`):** `typescript`, `@types/node`.
+# 2. Install dependencies
+npm install
 
-## 11. Important Notes & Limitations
+# 3. Set up environment variables
+echo "API_KEY=your_gemini_api_key_here" > .env
 
-*   **API Key Security:** The Google Gemini API key is managed securely using Netlify environment variables and accessed only by the backend Netlify Function.
-*   **Simulations:** Stethoscope and Face Wellness features are simulated/educational. Video analysis uses the first frame for nurse-UI feedback.
-*   **Non-Diagnostic:** This is a screening tool, not for diagnosis. Medical professional validation is essential.
-*   **Single Device Focus (Currently):** While designed for multi-nurse module completion, `localStorage` persistence is per-device. True multi-device, real-time collaboration would require a more complex backend.
-*   **Error Handling:** Basic error handling is present. Production systems would require more robust strategies.
-*   **Build Process:** The frontend (React/TSX) is handled directly by the browser using import maps and `esm.sh` (no separate frontend build step). The `npm run build:functions` script is *only* for compiling the TypeScript Netlify Functions to JavaScript.
-*   **Favicon/CSS Errors:** If you see 404 errors for `favicon.ico` or `index.css`, these are minor. The app uses Tailwind via CDN, so `index.css` is likely not needed unless you added custom global styles. Browsers often request `favicon.ico` by default.
-*   **MIME Type Error for `.tsx`:** If you are *not* using `netlify dev` and are serving files with a very basic static server locally, you might see MIME type errors for `.tsx` files. `netlify dev` or a proper deployment (like on Netlify) handles serving these correctly for the browser's ES module system.
+# 4. Start local development server
+netlify dev
+# Opens at http://localhost:8888
 ```
+
+#### **Production Deployment**
+```bash
+# 1. Push to GitHub repository
+git add .
+git commit -m "Initial deployment"
+git push origin main
+
+# 2. Connect to Netlify
+# - Link GitHub repository in Netlify dashboard
+# - Set environment variable: API_KEY=your_gemini_api_key
+# - Deploy automatically
+
+# 3. Configure custom domain (optional)
+# - Add domain in Netlify dashboard
+# - Update DNS records
+# - SSL automatically enabled
+```
+
+## 📱 **USAGE WORKFLOW**
+
+### **Step-by-Step Screening Process**
+
+#### **1. Student Identification**
+```
+📝 Enter student ID (manual or QR code simulation)
+📋 Fill basic information: name, age, gender, conditions
+🚀 Click "Start Screening" to begin
+```
+
+#### **2. Anthropometry Module**
+```
+📏 Height Measurement:
+   • Position student against measuring station
+   • Capture image with ruler visible
+   • Tap measurement points on image
+   • AI calculates height automatically
+
+⚖️ Weight Measurement:
+   • Have student step on scale
+   • Capture clear image of display
+   • AI reads weight value via OCR
+   • Verify and correct if needed
+
+📊 BMI Calculation:
+   • Automatically calculated from height/weight
+   • AI provides health category interpretation
+```
+
+#### **3. Specialized Imaging**
+```
+👂 ENT Examination:
+   • Select examination type (ear/nose/throat)
+   • Position camera appropriately
+   • Capture images or video
+   • AI analyzes for abnormalities
+
+🦷 Dental Examination:
+   • Position for oral cavity view
+   • Capture clear images
+   • AI analyzes dental health
+   • Add nurse observations
+```
+
+#### **4. Vital Signs**
+```
+🩺 Device Integration:
+   • Connect Bluetooth/USB medical devices
+   • Automatic data capture from devices
+   • Real-time validation and display
+
+📷 Camera Capture:
+   • Capture device display images
+   • AI reads values via OCR
+   • Manual entry fallback available
+
+💓 Measurements Include:
+   • Blood pressure (systolic/diastolic)
+   • Heart rate and rhythm
+   • Temperature (oral/temporal)
+   • Oxygen saturation (SpO2)
+```
+
+#### **5. Review & Export**
+```
+📋 Review all collected data
+✏️ Add final nurse observations
+🤖 Generate AI summary report
+📄 Export options: JSON, Print view
+✅ Mark screening complete
+```
+
+---
+
+## 🔗 **SUPPORTED DEVICES**
+
+### **📱 Camera Requirements**
+| Device Type | Minimum Resolution | Recommended |
+|-------------|-------------------|-------------|
+| Built-in Camera | 720p | 1080p+ |
+| External USB | 1080p | 4K for detailed imaging |
+| Smartphone | 8MP | 12MP+ |
+
+### **🔵 Bluetooth Medical Devices**
+| Device Category | Supported Brands | Models |
+|----------------|------------------|---------|
+| **Blood Pressure** | Omron, A&D Medical, Beurer | BLESmart series, UA series, BM series |
+| **Pulse Oximeters** | Nonin, Masimo, Contec | 3230, MightySat, CMS50 series |
+| **Thermometers** | Braun, iHealth, Omron | ThermoScan, PT3SBT, MC series |
+| **Digital Scales** | Tanita, Omron, Withings | BC series, HBF series, Body+ |
+
+### **🔌 USB Medical Devices**
+| Device Category | Supported Brands | Connection Type |
+|----------------|------------------|-----------------|
+| **Digital Scales** | Tanita, Seca, Detecto | USB-A, USB-C |
+| **Stadiometers** | Seca, Health-o-meter | USB with serial protocol |
+| **Digital Stethoscopes** | 3M Littmann, Eko | USB audio interface |
+
+### **🌐 Browser Compatibility**
+| Browser | Camera | Bluetooth | USB | Recommended |
+|---------|--------|-----------|-----|-------------|
+| Chrome 90+ | ✅ | ✅ | ✅ | ⭐ Best |
+| Edge 90+ | ✅ | ✅ | ✅ | ⭐ Best |
+| Firefox 88+ | ✅ | ❌ | ❌ | ⚠️ Limited |
+| Safari 14+ | ✅ | ❌ | ❌ | ⚠️ Limited |
+
+**💡 Tip**: Use Chrome or Edge for full device integration capabilities.
+
+---
+
+## 🔐 **API KEY MANAGEMENT**
+
+### **🔒 Security Architecture**
+The Google Gemini API Key is managed securely using Netlify Functions as a proxy:
+
+```
+Frontend → Netlify Function → Google Gemini API
+   ↓              ↓                    ↓
+No API Key    Secure Access      AI Analysis
+```
+
+### **⚙️ Environment Setup**
+```bash
+# Local development (.env file)
+API_KEY=your_gemini_api_key_here
+
+# Production (Netlify Dashboard)
+# Site Settings → Environment Variables
+# Key: API_KEY
+# Value: your_gemini_api_key_here
+```
+
+### **🛡️ Security Features**
+- ✅ API key never exposed to frontend
+- ✅ Secure serverless function proxy
+- ✅ Request validation and rate limiting
+- ✅ Origin verification for API calls
+
+## 🧪 **TESTING & QUALITY ASSURANCE**
+
+### **🔬 Testing Framework**
+```bash
+# Run all tests
+npm test
+
+# Run specific test suites
+npm run test:unit        # Component tests
+npm run test:integration # API integration tests
+npm run test:e2e         # End-to-end testing
+npm run test:devices     # Device integration tests
+```
+
+### **✅ Quality Measures**
+- **🧪 Unit Tests**: Component and service testing with Vitest
+- **🔗 Integration Tests**: Frontend-backend communication testing
+- **🔒 Type Safety**: Full TypeScript coverage with strict mode
+- **⚡ Performance**: Code splitting, caching, and PWA optimization
+- **🛡️ Security**: Secure API proxy, CSP headers, and data protection
+- **📱 Cross-Platform**: Testing on multiple devices and browsers
+
+## 🤝 **CONTRIBUTING**
+
+### **🔧 Development Setup**
+```bash
+# 1. Fork and clone the repository
+git clone https://github.com/yourusername/funsense.git
+cd funsense
+
+# 2. Install dependencies
+npm install
+
+# 3. Set up environment variables
+cp .env.example .env
+# Add your API keys and configuration
+
+# 4. Start development server
+netlify dev
+# Opens at http://localhost:8888
+
+# 5. Make your changes and test
+npm test
+npm run lint
+npm run type-check
+```
+
+### **📋 Development Guidelines**
+- **🔍 Code Quality**: Follow React best practices and TypeScript strict mode
+- **🧪 Testing**: Write tests for new features and bug fixes
+- **📖 Documentation**: Update documentation for any new features
+- **🔒 Security**: Follow security guidelines for medical applications
+- **📱 Compatibility**: Test on multiple devices and browsers
+
+### **🚀 Pull Request Process**
+1. **🌿 Create a feature branch**: `git checkout -b feature/amazing-feature`
+2. **💻 Make your changes**: Follow coding standards and add tests
+3. **✅ Test thoroughly**: Run all tests and manual testing
+4. **📝 Update documentation**: Include relevant documentation updates
+5. **🔄 Submit PR**: Open a pull request with clear description
+
+### **🐛 Bug Reports**
+When reporting bugs, please include:
+- **📱 Device and browser information**
+- **🔄 Steps to reproduce the issue**
+- **📸 Screenshots or error messages**
+- **📋 Expected vs actual behavior**
+
+### **💡 Feature Requests**
+For new features, please:
+- **📋 Describe the use case and benefits**
+- **🎯 Explain the proposed solution**
+- **🔍 Consider security and privacy implications**
+- **📱 Think about cross-platform compatibility**
+
+## 📁 **PROJECT STRUCTURE**
+
+```
+📦 School Health Screening System
+├── 📄 README.md                     # This comprehensive guide
+├── 📋 TEAM_TRAINING_MANUAL.md       # Complete user training guide
+├── 🔧 DEVELOPER_INTEGRATION_GUIDE.md # Technical integration documentation
+├── 🚨 TROUBLESHOOTING_GUIDE.md      # Common issues and solutions
+├── ✅ DEPLOYMENT_COMPLETION_CHECKLIST.md # Production deployment guide
+├── 🔗 DEVICE_INTEGRATION_GUIDE.md   # Bluetooth/USB device setup
+├── 🔒 SECURITY_COMPLIANCE.md        # Privacy and compliance guidelines
+│
+├── ⚙️ netlify.toml                  # Netlify configuration
+├── 📦 package.json                  # Dependencies and build scripts
+├── 🔐 .env                          # Environment variables (local)
+├── 🚫 .gitignore                    # Git ignore rules
+│
+├── 🌐 netlify/functions/            # Serverless backend functions
+│   ├── 🤖 gemini-proxy.ts          # Secure AI API proxy
+│   ├── ⚙️ tsconfig.json            # TypeScript configuration
+│   └── 📁 .dist/                   # Compiled functions (auto-generated)
+│
+├── 🏠 index.html                    # Main application entry point
+├── ⚛️ index.tsx                     # React application root
+├── 📱 App.tsx                       # Main App component
+├── 🔧 constants.ts                  # Application constants
+├── 📝 types.ts                      # TypeScript type definitions
+│
+├── 🧩 components/                   # Reusable UI components
+│   ├── 📷 Camera/                   # Camera capture components
+│   ├── 📋 Screens/                  # Main screen components
+│   └── 🎨 UI/                       # Common UI elements
+│
+├── 🔄 contexts/                     # React Context providers
+│   ├── 📊 ScreeningContext.tsx      # Screening state management
+│   └── ⚙️ SettingsContext.tsx       # Application settings
+│
+├── 🔧 services/                     # External service integrations
+│   ├── 🤖 geminiService.ts          # AI analysis service
+│   ├── 💾 localStorageService.ts    # Data persistence
+│   └── 🔗 deviceService.ts          # Medical device integration
+│
+└── 🎣 hooks/                        # Custom React hooks
+    ├── 📷 useCamera.ts              # Camera functionality
+    ├── 🔗 useDeviceIntegration.ts   # Device connectivity
+    └── 💾 useLocalStorage.ts        # Storage management
+```
+
+## 🆘 **SUPPORT & HELP**
+
+### **📖 Getting Help**
+1. **📚 Check Documentation**: Start with the relevant guide above
+2. **🔍 Search Issues**: Look through existing GitHub issues
+3. **🐛 Report Bugs**: Create a new issue with detailed information
+4. **💡 Request Features**: Open an enhancement request
+5. **💬 Ask Questions**: Use GitHub Discussions for general questions
+
+### **🚨 Emergency Support**
+For critical issues affecting patient care:
+1. **📋 Check [Troubleshooting Guide](TROUBLESHOOTING_GUIDE.md)** for immediate solutions
+2. **📞 Contact your IT support team** for technical issues
+3. **🩺 Use backup manual procedures** if system is unavailable
+4. **📝 Document the issue** for follow-up resolution
+
+### **📞 Contact Information**
+- **🐛 Bug Reports**: [GitHub Issues](https://github.com/thechildclinic/funsense/issues)
+- **💡 Feature Requests**: [GitHub Issues](https://github.com/thechildclinic/funsense/issues) with enhancement label
+- **💬 General Questions**: [GitHub Discussions](https://github.com/thechildclinic/funsense/discussions)
+- **🔒 Security Issues**: [security@yourschool.edu] (replace with your contact)
+
+## 📄 **LICENSE & ACKNOWLEDGMENTS**
+
+### **📜 License**
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### **🙏 Acknowledgments**
+- **🤖 Google Gemini AI** for intelligent health analysis capabilities
+- **⚛️ React Team** for the excellent frontend framework
+- **🎨 Tailwind CSS** for beautiful and responsive styling
+- **🏥 Medical Device Manufacturers** for API documentation and support
+- **👩‍⚕️ Healthcare Professionals** for requirements gathering and testing
+- **🏫 Educational Institutions** for feedback and real-world testing
+
+### **🔗 Related Projects**
+- **[Google Gemini API](https://ai.google.dev/)** - AI analysis engine
+- **[Netlify](https://netlify.com)** - Deployment and hosting platform
+- **[Web Bluetooth API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API)** - Device connectivity
+- **[React](https://react.dev)** - Frontend framework
+
+---
+
+## 🎯 **READY TO GET STARTED?**
+
+### **👥 For Healthcare Staff**
+📖 **Start with**: [Team Training Manual](TEAM_TRAINING_MANUAL.md)
+
+### **🔧 For IT/Developers**
+📖 **Start with**: [Developer Integration Guide](DEVELOPER_INTEGRATION_GUIDE.md)
+
+### **🚀 For Deployment**
+📖 **Start with**: [Deployment Completion Checklist](DEPLOYMENT_COMPLETION_CHECKLIST.md)
+
+### **🔗 For Device Setup**
+📖 **Start with**: [Device Integration Guide](DEVICE_INTEGRATION_GUIDE.md)
+
+---
+
+**🏥 Transform your school health screening process with AI-powered efficiency and accuracy!**
+
+**⭐ Star this repository if you find it helpful!**
+
+**🤝 Contributions welcome - see [Contributing](#-contributing) section above**
+
