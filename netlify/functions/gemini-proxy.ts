@@ -69,7 +69,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
           contents: prompt,
           config: { safetySettings: GEMINI_SAFETY_SETTINGS }
         });
-        resultText = genAIResponse.text;
+        resultText = genAIResponse.text || "";
         break;
 
       case 'analyzeImage':
@@ -87,7 +87,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
           contents: { parts: [imagePart, textPart] },
           config: { safetySettings: GEMINI_SAFETY_SETTINGS }
         });
-        resultText = genAIResponse.text;
+        resultText = genAIResponse.text || "";
         break;
       
       case 'analyzeAudio': 
@@ -98,7 +98,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
             contents: prompt,
             config: { safetySettings: GEMINI_SAFETY_SETTINGS }
         });
-        resultText = genAIResponse.text;
+        resultText = genAIResponse.text || "";
         break;
 
       default:
