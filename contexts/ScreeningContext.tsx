@@ -36,10 +36,14 @@ const defaultScreeningData: ScreeningData = {
   anthropometry: {},
   entData: {},
   dentalData: {},
+  dermatologyData: {
+    lesions: [],
+    generalSkinObservations: ''
+  },
   faceVitalData: {},
-  stethoscopeData: { 
-    heart: { image: '', simulatedAudioPrompt: '' }, 
-    lungs: { image: '', simulatedAudioPrompt: '' } 
+  stethoscopeData: {
+    heart: { image: '', simulatedAudioPrompt: '' },
+    lungs: { image: '', simulatedAudioPrompt: '' }
   },
   deviceVitals: {
     bp: defaultVitalSign("Blood Pressure", "mmHg", FaHeartbeat), // Default BP structure
@@ -65,6 +69,7 @@ export const ScreeningContextProvider: React.FC<{ children: ReactNode }> = ({ ch
     ScreeningStep.StudentIdentification,
     ScreeningStep.Anthropometry,
     ScreeningStep.SpecializedImaging,
+    ScreeningStep.Dermatology,
     ScreeningStep.VitalSigns,
     ScreeningStep.ReviewAndExport,
   ];

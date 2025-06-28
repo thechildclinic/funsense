@@ -9,9 +9,10 @@ import { FaBan } from 'react-icons/fa';
 import StudentIdentificationStep from './screening_steps/StudentIdentificationStep';
 import AnthropometryStep from './screening_steps/AnthropometryStep';
 import SpecializedImagingStep from './screening_steps/SpecializedImagingStep';
+import DermatologyStep from './screening_steps/DermatologyStep';
 import VitalSignsStep from './screening_steps/VitalSignsStep';
 import { ReviewAndExportStep } from './screening_steps/ReviewAndExportStep'; // Changed to named import
-import Header from '../components/Header'; 
+import Header from '../components/Header';
 
 interface ScreeningFlowProps {
   onScreeningEnd: () => void;
@@ -21,6 +22,7 @@ const screeningStepsOrder: ScreeningStep[] = [
     ScreeningStep.StudentIdentification,
     ScreeningStep.Anthropometry,
     ScreeningStep.SpecializedImaging,
+    ScreeningStep.Dermatology,
     ScreeningStep.VitalSigns,
     ScreeningStep.ReviewAndExport,
 ];
@@ -36,12 +38,14 @@ const ScreeningFlow: React.FC<ScreeningFlowProps> = ({ onScreeningEnd }) => {
         return <AnthropometryStep onScreeningEnd={onScreeningEnd} />;
       case ScreeningStep.SpecializedImaging:
         return <SpecializedImagingStep onScreeningEnd={onScreeningEnd} />;
+      case ScreeningStep.Dermatology:
+        return <DermatologyStep onScreeningEnd={onScreeningEnd} />;
       case ScreeningStep.VitalSigns:
         return <VitalSignsStep onScreeningEnd={onScreeningEnd} />;
       case ScreeningStep.ReviewAndExport:
         return <ReviewAndExportStep onScreeningComplete={onScreeningEnd} />;
       default:
-        navigateToStep(ScreeningStep.StudentIdentification); 
+        navigateToStep(ScreeningStep.StudentIdentification);
         return <StudentIdentificationStep />;
     }
   };

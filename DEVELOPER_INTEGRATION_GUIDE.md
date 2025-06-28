@@ -131,6 +131,24 @@ export const APP_CONFIG = {
     "ent": { "findings": "normal", "images": ["base64..."] },
     "dental": { "findings": "cavity detected", "images": ["base64..."] }
   },
+  "dermatology": {
+    "generalSkinObservations": "Overall skin appears healthy",
+    "lesions": [
+      {
+        "id": "lesion_001",
+        "location": "Left arm",
+        "nature": "Mole/Nevus",
+        "symptoms": "None",
+        "size": "Small (3mm)",
+        "color": "Dark brown",
+        "shape": "Round",
+        "image": "base64...",
+        "aiAnalysis": "Appears to be benign nevus...",
+        "confidence": 0.85,
+        "nurseNotes": "Regular shaped mole, no changes reported"
+      }
+    ]
+  },
   "aiAnalysis": {
     "summary": "Overall health appears normal...",
     "recommendations": ["Regular dental checkup recommended"],

@@ -9,6 +9,7 @@ export enum ScreeningStep {
   StudentIdentification = 'STUDENT_IDENTIFICATION',
   Anthropometry = 'ANTHROPOMETRY', // Height, Weight, BMI
   SpecializedImaging = 'SPECIALIZED_IMAGING', // ENT, Dental
+  Dermatology = 'DERMATOLOGY', // Skin examination and lesion documentation
   VitalSigns = 'VITAL_SIGNS', // Face Vitals (sim), Stethoscope (sim), Devices
   ReviewAndExport = 'REVIEW_AND_EXPORT',
 }
@@ -101,7 +102,29 @@ export interface EntData {
 
 export interface DentalData {
   oralCavity?: ImageAnalysisItem;
-  skippedReason?: string; 
+  skippedReason?: string;
+}
+
+export interface SkinLesion {
+  id: string;
+  location: string; // Body location of the lesion
+  nature: string; // Type/nature of the lesion
+  symptoms: string; // Associated symptoms
+  image?: string; // base64 image of the lesion
+  aiAnalysis?: string; // AI analysis of the lesion
+  confidence?: number;
+  constraints?: AnalysisConstraint[];
+  nurseNotes?: string; // Additional nurse observations
+  size?: string; // Size description or measurement
+  color?: string; // Color description
+  shape?: string; // Shape description
+  texture?: string; // Texture description
+}
+
+export interface DermatologyData {
+  lesions?: SkinLesion[]; // Array of documented lesions
+  generalSkinObservations?: string; // Overall skin condition notes
+  skippedReason?: string;
 }
 
 export interface FaceVitalData {
@@ -128,16 +151,17 @@ export interface ScreeningData {
   anthropometry: Partial<AnthropometryData>;
   entData: Partial<EntData>;
   dentalData: Partial<DentalData>;
+  dermatologyData: Partial<DermatologyData>;
   faceVitalData: Partial<FaceVitalData>;
-  stethoscopeData: Partial<StethoscopeData>; 
+  stethoscopeData: Partial<StethoscopeData>;
   deviceVitals: Partial<DeviceVitalData>;
-  nurseGeneralObservations?: string; 
+  nurseGeneralObservations?: string;
   finalReport?: {
     aiSummary?: string;
     // doctorValidationNotes changed to preliminaryNotesForDoctor
-    preliminaryNotesForDoctor?: string; 
+    preliminaryNotesForDoctor?: string;
   };
-  skippedSteps?: Partial<Record<ScreeningStep, string>>; 
+  skippedSteps?: Partial<Record<ScreeningStep, string>>;
 }
 
 export interface AnalysisResult {

@@ -99,7 +99,30 @@ Dental Examination:
 4. Document findings
 ```
 
-### **Step 4: Vital Signs**
+### **Step 4: Dermatology/Skin Assessment**
+```
+General Skin Observations:
+1. Record overall skin condition
+2. Note any areas of concern
+3. Document general skin health
+
+Skin Lesion Documentation:
+1. Click "Add Lesion" for each finding
+2. Select location from dropdown
+3. Choose lesion type/nature
+4. Select associated symptoms
+5. Take clear photo of lesion
+6. Add detailed nurse notes
+7. Use AI analysis for assessment
+8. Save each lesion individually
+
+Multiple Lesions:
+- Document each lesion separately
+- Edit or delete lesions as needed
+- Comprehensive documentation for referral
+```
+
+### **Step 5: Vital Signs**
 ```
 Device Vitals:
 1. Take measurements with medical devices
@@ -118,7 +141,7 @@ Stethoscope (Simulated):
 3. Educational simulation only
 ```
 
-### **Step 5: Review & Export**
+### **Step 6: Review & Export**
 ```
 1. Review all collected data
 2. Add final nurse observations
@@ -148,6 +171,23 @@ Stethoscope (Simulated):
 - 🔍 **Verify AI readings for accuracy**
 - ✏️ **Always review and correct data**
 - 📝 **Add detailed nurse observations**
+
+### **Dermatology/Skin Assessment Guidelines**
+- 🔍 **Document all visible skin lesions systematically**
+- 📸 **Take clear, well-lit photos of each lesion**
+- 📝 **Record precise location and characteristics**
+- ⚠️ **Flag concerning lesions for immediate referral**
+- 🩺 **Never attempt to diagnose - document observations only**
+- 📋 **Use standardized terminology for consistency**
+- 🔄 **Review previous screenings if available**
+
+### **Skin Photography Best Practices**
+- 💡 **Use natural lighting when possible**
+- 📏 **Include size reference (ruler/coin) if needed**
+- 🎯 **Focus clearly on the lesion**
+- 📐 **Capture from appropriate distance**
+- 🔄 **Take multiple angles if necessary**
+- 🚫 **Avoid flash that creates glare**
 
 ---
 
