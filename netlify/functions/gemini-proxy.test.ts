@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { handler } from './gemini-proxy';
-import type { HandlerEvent, HandlerContext } from '@netlify/functions';
+import type { HandlerEvent, HandlerContext, HandlerResponse } from '@netlify/functions';
 
 // Mock the Google GenAI
 vi.mock('@google/genai', () => ({
@@ -39,58 +39,58 @@ describe('Gemini Proxy Function', () => {
       body: '',
       isBase64Encoded: false,
       path: '',
-      pathParameters: null,
       queryStringParameters: null,
       multiValueQueryStringParameters: null,
-      requestContext: {} as any,
       resource: '',
       stageVariables: null,
-    };
+      rawUrl: '',
+      rawQuery: '',
+    } as HandlerEvent;
   });
 
   it('should return 405 for non-POST requests', async () => {
     mockEvent.httpMethod = 'GET';
-    
-    const result = await handler(mockEvent, mockContext);
-    
+
+    const result = await handler(mockEvent, mockContext) as HandlerResponse;
+
     expect(result.statusCode).toBe(405);
-    expect(JSON.parse(result.body)).toEqual({ error: 'Method Not Allowed' });
+    expect(JSON.parse(result.body!)).toEqual({ error: 'Method Not Allowed' });
   });
 
   it('should return 400 for missing request body', async () => {
     mockEvent.body = null;
-    
-    const result = await handler(mockEvent, mockContext);
-    
+
+    const result = await handler(mockEvent, mockContext) as HandlerResponse;
+
     expect(result.statusCode).toBe(400);
-    expect(JSON.parse(result.body)).toEqual({ 
-      error: 'Invalid JSON in request body.', 
-      details: 'Request body is missing.' 
+    expect(JSON.parse(result.body!)).toEqual({
+      error: 'Invalid JSON in request body.',
+      details: 'Request body is missing.'
     });
   });
 
   it('should return 400 for invalid JSON', async () => {
     mockEvent.body = 'invalid-json';
-    
-    const result = await handler(mockEvent, mockContext);
-    
+
+    const result = await handler(mockEvent, mockContext) as HandlerResponse;
+
     expect(result.statusCode).toBe(400);
-    expect(JSON.parse(result.body).error).toBe('Invalid JSON in request body.');
+    expect(JSON.parse(result.body!).error).toBe('Invalid JSON in request body.');
   });
 
   it('should return 500 when API_KEY is not set', async () => {
     delete process.env.API_KEY;
-    
+
     mockEvent.body = JSON.stringify({
       action: 'generateText',
       prompt: 'Test prompt',
     });
-    
-    const result = await handler(mockEvent, mockContext);
-    
+
+    const result = await handler(mockEvent, mockContext) as HandlerResponse;
+
     expect(result.statusCode).toBe(500);
-    expect(JSON.parse(result.body)).toEqual({ 
-      error: 'API Key not configured on the server. Please check Netlify environment variables.' 
+    expect(JSON.parse(result.body!)).toEqual({
+      error: 'API Key not configured on the server. Please check Netlify environment variables.'
     });
   });
 
@@ -100,17 +100,17 @@ describe('Gemini Proxy Function', () => {
     mockGenAI.models.generateContent = vi.fn().mockResolvedValue({
       text: 'Generated text response',
     });
-    
+
     mockEvent.body = JSON.stringify({
       action: 'generateText',
       prompt: 'Test prompt',
     });
-    
-    const result = await handler(mockEvent, mockContext);
-    
+
+    const result = await handler(mockEvent, mockContext) as HandlerResponse;
+
     expect(result.statusCode).toBe(200);
-    expect(JSON.parse(result.body)).toEqual({ 
-      result: 'Generated text response' 
+    expect(JSON.parse(result.body!)).toEqual({
+      result: 'Generated text response'
     });
   });
 
@@ -120,19 +120,19 @@ describe('Gemini Proxy Function', () => {
     mockGenAI.models.generateContent = vi.fn().mockResolvedValue({
       text: 'Image analysis result',
     });
-    
+
     mockEvent.body = JSON.stringify({
       action: 'analyzeImage',
       base64ImageData: 'base64-image-data',
       prompt: 'Analyze this image',
       mimeType: 'image/jpeg',
     });
-    
-    const result = await handler(mockEvent, mockContext);
-    
+
+    const result = await handler(mockEvent, mockContext) as HandlerResponse;
+
     expect(result.statusCode).toBe(200);
-    expect(JSON.parse(result.body)).toEqual({ 
-      result: 'Image analysis result' 
+    expect(JSON.parse(result.body!)).toEqual({
+      result: 'Image analysis result'
     });
   });
 
@@ -142,18 +142,18 @@ describe('Gemini Proxy Function', () => {
     mockGenAI.models.generateContent = vi.fn().mockResolvedValue({
       text: 'OCR extracted text',
     });
-    
+
     mockEvent.body = JSON.stringify({
       action: 'ocr',
       base64ImageData: 'base64-image-data',
       prompt: 'Extract text from image',
     });
-    
-    const result = await handler(mockEvent, mockContext);
-    
+
+    const result = await handler(mockEvent, mockContext) as HandlerResponse;
+
     expect(result.statusCode).toBe(200);
-    expect(JSON.parse(result.body)).toEqual({ 
-      result: 'OCR extracted text' 
+    expect(JSON.parse(result.body!)).toEqual({
+      result: 'OCR extracted text'
     });
   });
 
@@ -163,18 +163,18 @@ describe('Gemini Proxy Function', () => {
     mockGenAI.models.generateContent = vi.fn().mockResolvedValue({
       text: 'Audio analysis result',
     });
-    
+
     mockEvent.body = JSON.stringify({
       action: 'analyzeAudio',
       simulatedInputType: 'SIMULATED_HEART_SOUNDS',
       prompt: 'Analyze heart sounds',
     });
-    
-    const result = await handler(mockEvent, mockContext);
-    
+
+    const result = await handler(mockEvent, mockContext) as HandlerResponse;
+
     expect(result.statusCode).toBe(200);
-    expect(JSON.parse(result.body)).toEqual({ 
-      result: 'Audio analysis result' 
+    expect(JSON.parse(result.body!)).toEqual({
+      result: 'Audio analysis result'
     });
   });
 
@@ -183,12 +183,12 @@ describe('Gemini Proxy Function', () => {
       action: 'invalidAction',
       prompt: 'Test prompt',
     });
-    
-    const result = await handler(mockEvent, mockContext);
-    
+
+    const result = await handler(mockEvent, mockContext) as HandlerResponse;
+
     expect(result.statusCode).toBe(400);
-    expect(JSON.parse(result.body)).toEqual({ 
-      error: 'Invalid action specified.' 
+    expect(JSON.parse(result.body!)).toEqual({
+      error: 'Invalid action specified.'
     });
   });
 
@@ -197,10 +197,10 @@ describe('Gemini Proxy Function', () => {
       action: 'generateText',
       // Missing prompt
     });
-    
-    const result = await handler(mockEvent, mockContext);
-    
+
+    const result = await handler(mockEvent, mockContext) as HandlerResponse;
+
     expect(result.statusCode).toBe(500);
-    expect(JSON.parse(result.body).error).toContain('Prompt is required');
+    expect(JSON.parse(result.body!).error).toContain('Prompt is required');
   });
 });
