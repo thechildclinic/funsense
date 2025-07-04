@@ -1,4 +1,8 @@
-# School Health Screening System
+# 🏥 AI-Powered Health Screening System
+
+> **Complete school health screening solution with AI integration, professional reporting, and emergency navigation**
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/satishskid/skidscameraAIscreen)
 
 ## 1. Description
 
