@@ -1,0 +1,306 @@
+/* Professional Medical Report Print Styles */
+@media print {
+  /* Hide non-essential elements */
+  .no-print,
+  button:not(.print-keep),
+  .settings-button,
+  .navigation-buttons,
+  .action-buttons,
+  .modal-overlay,
+  .loading-spinner {
+    display: none !important;
+  }
+
+  /* Page setup */
+  @page {
+    size: A4;
+    margin: 1in;
+    @top-center {
+      content: "Health Screening Report";
+      font-family: Arial, sans-serif;
+      font-size: 12pt;
+      color: #666;
+    }
+    @bottom-center {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: Arial, sans-serif;
+      font-size: 10pt;
+      color: #666;
+    }
+  }
+
+  /* Reset and base styles */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    font-family: 'Times New Roman', serif !important;
+    font-size: 12pt !important;
+    line-height: 1.4 !important;
+    color: #000 !important;
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Medical Report Header */
+  .print-header {
+    text-align: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10pt;
+    margin-bottom: 20pt;
+  }
+
+  .print-header h1 {
+    font-size: 18pt !important;
+    font-weight: bold !important;
+    margin: 0 0 5pt 0 !important;
+    color: #000 !important;
+  }
+
+  .print-header .facility-info {
+    font-size: 11pt !important;
+    color: #333 !important;
+    margin: 5pt 0 !important;
+  }
+
+  /* Patient Information */
+  .print-patient-info {
+    background: #f8f9fa !important;
+    border: 1px solid #000 !important;
+    padding: 10pt !important;
+    margin-bottom: 15pt !important;
+    page-break-inside: avoid;
+  }
+
+  .print-patient-info h2 {
+    font-size: 14pt !important;
+    font-weight: bold !important;
+    margin: 0 0 8pt 0 !important;
+    color: #000 !important;
+    border-bottom: 1px solid #666;
+    padding-bottom: 3pt;
+  }
+
+  .patient-details-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10pt !important;
+  }
+
+  .patient-detail-item {
+    margin-bottom: 5pt !important;
+  }
+
+  .patient-detail-label {
+    font-weight: bold !important;
+    color: #000 !important;
+    display: inline-block !important;
+    width: 100pt !important;
+  }
+
+  .patient-detail-value {
+    color: #000 !important;
+  }
+
+  /* Screening Sections */
+  .print-section {
+    margin-bottom: 20pt !important;
+    page-break-inside: avoid;
+    border: 1px solid #ccc !important;
+    padding: 10pt !important;
+  }
+
+  .print-section h3 {
+    font-size: 13pt !important;
+    font-weight: bold !important;
+    color: #000 !important;
+    margin: 0 0 10pt 0 !important;
+    border-bottom: 1px solid #000;
+    padding-bottom: 3pt;
+  }
+
+  /* Vital Signs Table */
+  .vitals-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 10pt 0 !important;
+  }
+
+  .vitals-table th,
+  .vitals-table td {
+    border: 1px solid #000 !important;
+    padding: 5pt !important;
+    text-align: left !important;
+    font-size: 11pt !important;
+  }
+
+  .vitals-table th {
+    background: #e9ecef !important;
+    font-weight: bold !important;
+  }
+
+  /* Measurements Grid */
+  .measurements-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10pt !important;
+    margin: 10pt 0 !important;
+  }
+
+  .measurement-item {
+    border: 1px solid #ccc !important;
+    padding: 8pt !important;
+    background: #f8f9fa !important;
+  }
+
+  .measurement-label {
+    font-weight: bold !important;
+    color: #000 !important;
+    font-size: 11pt !important;
+  }
+
+  .measurement-value {
+    font-size: 12pt !important;
+    color: #000 !important;
+    margin-top: 3pt !important;
+  }
+
+  /* Images and Media */
+  .print-image {
+    max-width: 200pt !important;
+    max-height: 150pt !important;
+    border: 1px solid #000 !important;
+    margin: 5pt !important;
+    page-break-inside: avoid;
+  }
+
+  .images-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200pt, 1fr)) !important;
+    gap: 10pt !important;
+    margin: 10pt 0 !important;
+  }
+
+  .image-container {
+    text-align: center !important;
+    page-break-inside: avoid;
+  }
+
+  .image-caption {
+    font-size: 10pt !important;
+    color: #666 !important;
+    margin-top: 3pt !important;
+    font-style: italic !important;
+  }
+
+  /* AI Analysis and Notes */
+  .ai-analysis {
+    background: #fff3cd !important;
+    border: 1px solid #ffc107 !important;
+    padding: 10pt !important;
+    margin: 10pt 0 !important;
+    page-break-inside: avoid;
+  }
+
+  .ai-analysis h4 {
+    font-size: 12pt !important;
+    font-weight: bold !important;
+    color: #000 !important;
+    margin: 0 0 5pt 0 !important;
+  }
+
+  .nurse-notes {
+    background: #d1ecf1 !important;
+    border: 1px solid #bee5eb !important;
+    padding: 10pt !important;
+    margin: 10pt 0 !important;
+    page-break-inside: avoid;
+  }
+
+  .nurse-notes h4 {
+    font-size: 12pt !important;
+    font-weight: bold !important;
+    color: #000 !important;
+    margin: 0 0 5pt 0 !important;
+  }
+
+  /* Summary and Recommendations */
+  .print-summary {
+    background: #e2e3e5 !important;
+    border: 2px solid #000 !important;
+    padding: 15pt !important;
+    margin: 20pt 0 !important;
+    page-break-inside: avoid;
+  }
+
+  .print-summary h3 {
+    font-size: 14pt !important;
+    font-weight: bold !important;
+    color: #000 !important;
+    margin: 0 0 10pt 0 !important;
+    text-align: center !important;
+  }
+
+  /* Footer */
+  .print-footer {
+    margin-top: 30pt !important;
+    border-top: 1px solid #000 !important;
+    padding-top: 10pt !important;
+    font-size: 10pt !important;
+    color: #666 !important;
+  }
+
+  .signature-section {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 50pt !important;
+    margin-top: 30pt !important;
+  }
+
+  .signature-line {
+    border-bottom: 1px solid #000 !important;
+    height: 30pt !important;
+    margin-bottom: 5pt !important;
+  }
+
+  .signature-label {
+    font-size: 10pt !important;
+    color: #000 !important;
+    font-weight: bold !important;
+  }
+
+  /* Page breaks */
+  .page-break-before {
+    page-break-before: always !important;
+  }
+
+  .page-break-after {
+    page-break-after: always !important;
+  }
+
+  .page-break-avoid {
+    page-break-inside: avoid !important;
+  }
+
+  /* Hide video elements in print */
+  video {
+    display: none !important;
+  }
+
+  /* Ensure text is readable */
+  .text-white {
+    color: #000 !important;
+  }
+
+  .bg-blue-500,
+  .bg-green-500,
+  .bg-red-500,
+  .bg-yellow-500 {
+    background: #f8f9fa !important;
+    color: #000 !important;
+  }
+}

@@ -5,9 +5,10 @@ import Header from './components/Header';
 import StartScreeningScreen from './screens/StartScreeningScreen';
 import ScreeningFlow from './screens/ScreeningFlow';
 import { ScreeningContextProvider, useScreeningContext } from './contexts/ScreeningContext';
-import { SettingsContextProvider } from './contexts/SettingsContext'; 
+import { SettingsContextProvider } from './contexts/SettingsContext';
 import SettingsModal from './components/SettingsModal';
-import { getActiveScreeningStudentId, loadActiveScreening, setActiveScreeningStudentId } from './services/localStorageService';
+import EmergencyResetButton from './components/EmergencyResetButton';
+import { getActiveScreeningStudentId, loadActiveScreening, setActiveScreeningStudentId, clearAllScreeningSessionData } from './services/localStorageService';
 import { FaCog } from 'react-icons/fa';
 
 const AppInternal: React.FC = () => {
@@ -31,6 +32,27 @@ const AppInternal: React.FC = () => {
     }
   }, []);
 
+  // Emergency keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Ctrl+Shift+R for emergency reset
+      if (event.ctrlKey && event.shiftKey && event.key === 'R') {
+        event.preventDefault();
+        if (window.confirm('Emergency Reset: This will clear all data and restart the application. Continue?')) {
+          handleEmergencyReset();
+        }
+      }
+      // Ctrl+Shift+H for emergency home
+      if (event.ctrlKey && event.shiftKey && event.key === 'H') {
+        event.preventDefault();
+        handleEmergencyHome();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleScreeningStart = () => {
     setCurrentAppScreen(AppScreen.Screening);
     // Student data is set via StartScreeningScreen into its own context instance now
@@ -44,6 +66,29 @@ const AppInternal: React.FC = () => {
     // Data for the student remains in localStorage unless explicitly cleared by "Mark Complete & Submit".
     // setActiveScreeningStudentId(null); // Let StartScreeningScreen handle active ID management on new selection
     setCurrentAppScreen(AppScreen.Start);
+  };
+
+  const handleEmergencyReset = () => {
+    // Emergency reset - clear all data and reset application state
+    try {
+      clearAllScreeningSessionData();
+      setActiveScreeningStudentId(null);
+      setCurrentAppScreen(AppScreen.Start);
+      setIsSettingsModalOpen(false);
+
+      // Force page reload to ensure clean state
+      window.location.reload();
+    } catch (error) {
+      console.error('Emergency reset failed:', error);
+      // Fallback - force page reload
+      window.location.reload();
+    }
+  };
+
+  const handleEmergencyHome = () => {
+    // Navigate to home without clearing data
+    setCurrentAppScreen(AppScreen.Start);
+    setIsSettingsModalOpen(false);
   };
   
   const patientForHeader = currentAppScreen === AppScreen.Screening ? {
@@ -78,8 +123,14 @@ const AppInternal: React.FC = () => {
           </ScreeningContextProvider>
         )}
       </main>
-      
+
       <SettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} />
+
+      {/* Emergency Reset Button - Always available */}
+      <EmergencyResetButton
+        onReset={handleEmergencyReset}
+        onHome={handleEmergencyHome}
+      />
 
       <footer className="text-center text-xs text-gray-500 py-4 mt-auto">
         <p>&copy; {new Date().getFullYear()} School Health Screening System. For educational and illustrative purposes.</p>

@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSettingsContext } from '../contexts/SettingsContext';
 import { clearAllScreeningSessionData } from '../services/localStorageService'; // Changed from clearAllApplicationData
-import { FaCamera, FaMicrophone, FaTrashAlt, FaTimes, FaCog } from 'react-icons/fa';
+import { FaCamera, FaMicrophone, FaTrashAlt, FaTimes, FaCog, FaBrain, FaKey, FaCheck, FaExclamationTriangle, FaRobot } from 'react-icons/fa';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -10,6 +10,12 @@ interface SettingsModalProps {
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const { settings, updateSettings, availableCameras, availableMicrophones, refreshDevices } = useSettingsContext();
+
+  // AI Provider Configuration State
+  const [selectedAIProvider, setSelectedAIProvider] = useState(localStorage.getItem('aiProvider') || 'gemini');
+  const [apiKey, setApiKey] = useState(localStorage.getItem('aiApiKey') || '');
+  const [isTestingConnection, setIsTestingConnection] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     if (isOpen) {
@@ -26,6 +32,59 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
       // Optionally, could also reset current app state if needed, but usually just clearing storage is enough.
     }
   };
+
+  const handleAIProviderChange = (provider: string) => {
+    setSelectedAIProvider(provider);
+    localStorage.setItem('aiProvider', provider);
+    setConnectionStatus('idle');
+  };
+
+  const handleApiKeyChange = (key: string) => {
+    setApiKey(key);
+    localStorage.setItem('aiApiKey', key);
+    setConnectionStatus('idle');
+  };
+
+  const testAIConnection = async () => {
+    if (!apiKey.trim()) {
+      alert('Please enter an API key first');
+      return;
+    }
+
+    setIsTestingConnection(true);
+    setConnectionStatus('idle');
+
+    try {
+      // Simple test call to verify API key works
+      const response = await fetch('/.netlify/functions/gemini-proxy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'generateText',
+          prompt: 'Test connection - respond with "OK"',
+          provider: selectedAIProvider,
+          apiKey: apiKey
+        })
+      });
+
+      if (response.ok) {
+        setConnectionStatus('success');
+      } else {
+        setConnectionStatus('error');
+      }
+    } catch (error) {
+      setConnectionStatus('error');
+    } finally {
+      setIsTestingConnection(false);
+    }
+  };
+
+  const aiProviders = [
+    { id: 'gemini', name: 'Google Gemini', description: 'Google\'s advanced AI model' },
+    { id: 'openai', name: 'OpenAI GPT', description: 'ChatGPT and GPT models' },
+    { id: 'claude', name: 'Anthropic Claude', description: 'Claude AI assistant' },
+    { id: 'local', name: 'Local AI', description: 'On-device AI models (Gemma, etc.)' }
+  ];
 
   return (
     <div 
@@ -103,12 +162,84 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             <p className="text-xs text-slate-500 mt-1">This removes all incomplete student screening data saved on this device. Submitted data is not affected.</p>
           </div>
 
-          {/* Future Integrations */}
+          {/* AI Provider Configuration */}
           <div className="pt-3 border-t border-gray-200">
-            <h3 className="text-md font-medium text-slate-700 mb-1">Future Integrations</h3>
-            <p className="text-sm text-slate-500 p-3 bg-gray-100 rounded-md">
-              AI provider selection and AyuSync SDK integration will be available in future updates.
-            </p>
+            <h3 className="text-md font-medium text-slate-700 mb-3 flex items-center gap-2">
+              <FaBrain className="text-blue-600" /> AI Provider Configuration
+            </h3>
+
+            {/* AI Provider Selection */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-600 mb-2">Select AI Provider:</label>
+              <div className="grid grid-cols-2 gap-2">
+                {aiProviders.map((provider) => (
+                  <button
+                    key={provider.id}
+                    onClick={() => handleAIProviderChange(provider.id)}
+                    className={`p-3 rounded-lg border-2 text-left transition-all ${
+                      selectedAIProvider === provider.id
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    <div className="font-medium text-sm">{provider.name}</div>
+                    <div className="text-xs text-gray-500 mt-1">{provider.description}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* API Key Configuration */}
+            {selectedAIProvider !== 'local' && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-slate-600 mb-2 flex items-center gap-1">
+                  <FaKey className="text-gray-500" /> API Key:
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    value={apiKey}
+                    onChange={(e) => handleApiKeyChange(e.target.value)}
+                    placeholder="Enter your API key..."
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  />
+                  <button
+                    onClick={testAIConnection}
+                    disabled={isTestingConnection || !apiKey.trim()}
+                    className="px-3 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white rounded-md text-sm flex items-center gap-1"
+                  >
+                    {isTestingConnection ? (
+                      <FaRobot className="animate-spin" />
+                    ) : (
+                      <FaCheck />
+                    )}
+                    Test
+                  </button>
+                </div>
+
+                {/* Connection Status */}
+                {connectionStatus === 'success' && (
+                  <div className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                    <FaCheck /> Connection successful!
+                  </div>
+                )}
+                {connectionStatus === 'error' && (
+                  <div className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                    <FaExclamationTriangle /> Connection failed. Check your API key.
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Local AI Info */}
+            {selectedAIProvider === 'local' && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-md">
+                <div className="text-sm text-green-700">
+                  <strong>Local AI Mode:</strong> Uses on-device AI models for privacy and offline capability.
+                  No API key required.
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

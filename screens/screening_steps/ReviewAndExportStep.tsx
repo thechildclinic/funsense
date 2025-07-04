@@ -96,7 +96,348 @@ export const ReviewAndExportStep: React.FC<ReviewAndExportStepProps> = ({ onScre
   };
 
   const handlePrint = () => {
-    window.print();
+    // Create comprehensive print view
+    const printContent = generatePrintableReport();
+
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Health Screening Report - ${screeningData.patientInfo?.name?.value || 'Patient'}</title>
+          <link rel="stylesheet" href="/styles/print.css">
+          <style>
+            body { font-family: 'Times New Roman', serif; margin: 0; padding: 20px; }
+            .no-print { display: none !important; }
+          </style>
+        </head>
+        <body>
+          ${printContent}
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+
+      // Wait for content to load, then print
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 500);
+    } else {
+      // Fallback to regular print
+      window.print();
+    }
+  };
+
+  const generatePrintableReport = (): string => {
+    const patient = screeningData.patientInfo;
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+
+    return `
+      <div class="print-header">
+        <h1>COMPREHENSIVE HEALTH SCREENING REPORT</h1>
+        <div class="facility-info">
+          <div>School Health Screening System</div>
+          <div>Generated: ${currentDate} at ${currentTime}</div>
+        </div>
+      </div>
+
+      <div class="print-patient-info">
+        <h2>Patient Information</h2>
+        <div class="patient-details-grid">
+          <div class="patient-detail-item">
+            <span class="patient-detail-label">Name:</span>
+            <span class="patient-detail-value">${patient?.name?.value || 'N/A'}</span>
+          </div>
+          <div class="patient-detail-item">
+            <span class="patient-detail-label">Student ID:</span>
+            <span class="patient-detail-value">${patient?.qrId || patient?.manualId || 'N/A'}</span>
+          </div>
+          <div class="patient-detail-item">
+            <span class="patient-detail-label">Age:</span>
+            <span class="patient-detail-value">${patient?.age?.value || 'N/A'}</span>
+          </div>
+          <div class="patient-detail-item">
+            <span class="patient-detail-label">Gender:</span>
+            <span class="patient-detail-value">${patient?.gender?.value || 'N/A'}</span>
+          </div>
+          <div class="patient-detail-item">
+            <span class="patient-detail-label">Class:</span>
+            <span class="patient-detail-value">${patient?.class?.value || 'N/A'}</span>
+          </div>
+          <div class="patient-detail-item">
+            <span class="patient-detail-label">School:</span>
+            <span class="patient-detail-value">${patient?.school?.value || 'N/A'}</span>
+          </div>
+        </div>
+      </div>
+
+      ${generateAnthropometrySection()}
+      ${generateVitalSignsSection()}
+      ${generateImagingSection()}
+      ${generateDermatologySection()}
+      ${generateAIAnalysisSection()}
+      ${generateNurseNotesSection()}
+      ${generateSummarySection()}
+      ${generateSignatureSection()}
+    `;
+  };
+
+  const generateAnthropometrySection = (): string => {
+    const anthro = screeningData.anthropometryData;
+    if (!anthro || Object.keys(anthro).length === 0) return '';
+
+    return `
+      <div class="print-section">
+        <h3>Anthropometric Measurements</h3>
+        <div class="measurements-grid">
+          ${anthro.height ? `
+            <div class="measurement-item">
+              <div class="measurement-label">Height</div>
+              <div class="measurement-value">${anthro.height.value} ${anthro.height.unit}</div>
+            </div>
+          ` : ''}
+          ${anthro.weight ? `
+            <div class="measurement-item">
+              <div class="measurement-label">Weight</div>
+              <div class="measurement-value">${anthro.weight.value} ${anthro.weight.unit}</div>
+            </div>
+          ` : ''}
+          ${anthro.bmi ? `
+            <div class="measurement-item">
+              <div class="measurement-label">BMI</div>
+              <div class="measurement-value">${anthro.bmi.value}</div>
+            </div>
+          ` : ''}
+          ${anthro.headCircumference ? `
+            <div class="measurement-item">
+              <div class="measurement-label">Head Circumference</div>
+              <div class="measurement-value">${anthro.headCircumference.value} ${anthro.headCircumference.unit}</div>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  };
+
+  const generateVitalSignsSection = (): string => {
+    const vitals = screeningData.vitalSignsData;
+    if (!vitals || Object.keys(vitals).length === 0) return '';
+
+    return `
+      <div class="print-section">
+        <h3>Vital Signs</h3>
+        <table class="vitals-table">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Value</th>
+              <th>Unit</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${vitals.heartRate ? `
+              <tr>
+                <td>Heart Rate</td>
+                <td>${vitals.heartRate.value}</td>
+                <td>${vitals.heartRate.unit}</td>
+                <td>${getVitalStatus(vitals.heartRate.value, 'heartRate')}</td>
+              </tr>
+            ` : ''}
+            ${vitals.bloodPressure ? `
+              <tr>
+                <td>Blood Pressure</td>
+                <td>${vitals.bloodPressure.systolic}/${vitals.bloodPressure.diastolic}</td>
+                <td>mmHg</td>
+                <td>${getVitalStatus(vitals.bloodPressure.systolic, 'bloodPressure')}</td>
+              </tr>
+            ` : ''}
+            ${vitals.temperature ? `
+              <tr>
+                <td>Temperature</td>
+                <td>${vitals.temperature.value}</td>
+                <td>${vitals.temperature.unit}</td>
+                <td>${getVitalStatus(vitals.temperature.value, 'temperature')}</td>
+              </tr>
+            ` : ''}
+            ${vitals.oxygenSaturation ? `
+              <tr>
+                <td>Oxygen Saturation</td>
+                <td>${vitals.oxygenSaturation.value}</td>
+                <td>${vitals.oxygenSaturation.unit}</td>
+                <td>${getVitalStatus(vitals.oxygenSaturation.value, 'oxygenSaturation')}</td>
+              </tr>
+            ` : ''}
+          </tbody>
+        </table>
+      </div>
+    `;
+  };
+
+  const generateImagingSection = (): string => {
+    const imaging = screeningData.imagingData;
+    if (!imaging || Object.keys(imaging).length === 0) return '';
+
+    let content = '<div class="print-section"><h3>Medical Imaging</h3>';
+
+    Object.entries(imaging).forEach(([key, item]) => {
+      if (item && (item.image || item.videoSrc)) {
+        content += `
+          <div class="image-container page-break-avoid">
+            <h4>${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</h4>
+            ${item.image ? `<img src="${item.image}" class="print-image" alt="${key} image" />` : ''}
+            ${item.aiAnalysis ? `
+              <div class="ai-analysis">
+                <h4>AI Analysis:</h4>
+                <p>${item.aiAnalysis}</p>
+              </div>
+            ` : ''}
+            ${item.nurseNotes ? `
+              <div class="nurse-notes">
+                <h4>Nurse Notes:</h4>
+                <p>${item.nurseNotes}</p>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+    });
+
+    content += '</div>';
+    return content;
+  };
+
+  const generateDermatologySection = (): string => {
+    const dermData = screeningData.dermatologyAssessment;
+    if (!dermData || Object.keys(dermData).length === 0) return '';
+
+    let content = '<div class="print-section"><h3>Dermatological Assessment</h3>';
+
+    Object.entries(dermData).forEach(([area, item]) => {
+      if (item && (item.image || item.aiAnalysis || item.nurseNotes)) {
+        content += `
+          <div class="page-break-avoid">
+            <h4>${area.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</h4>
+            ${item.image ? `<img src="${item.image}" class="print-image" alt="${area} assessment" />` : ''}
+            ${item.aiAnalysis ? `
+              <div class="ai-analysis">
+                <h4>AI Analysis:</h4>
+                <p>${item.aiAnalysis}</p>
+              </div>
+            ` : ''}
+            ${item.nurseNotes ? `
+              <div class="nurse-notes">
+                <h4>Clinical Notes:</h4>
+                <p>${item.nurseNotes}</p>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+    });
+
+    content += '</div>';
+    return content;
+  };
+
+  const generateAIAnalysisSection = (): string => {
+    if (!aiSummary) return '';
+
+    return `
+      <div class="print-section">
+        <h3>AI-Generated Summary</h3>
+        <div class="ai-analysis">
+          <p>${aiSummary}</p>
+        </div>
+      </div>
+    `;
+  };
+
+  const generateNurseNotesSection = (): string => {
+    const notes = screeningData.nurseGeneralObservations || nurseObservations;
+    const prelimNotes = preliminaryNotesForDoctor;
+
+    if (!notes && !prelimNotes) return '';
+
+    return `
+      <div class="print-section">
+        <h3>Clinical Notes</h3>
+        ${notes ? `
+          <div class="nurse-notes">
+            <h4>General Observations:</h4>
+            <p>${notes}</p>
+          </div>
+        ` : ''}
+        ${prelimNotes ? `
+          <div class="nurse-notes">
+            <h4>Preliminary Notes for Doctor:</h4>
+            <p>${prelimNotes}</p>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  };
+
+  const generateSummarySection = (): string => {
+    return `
+      <div class="print-summary">
+        <h3>SCREENING SUMMARY</h3>
+        <p><strong>Screening Date:</strong> ${new Date().toLocaleDateString()}</p>
+        <p><strong>Screening Time:</strong> ${new Date().toLocaleTimeString()}</p>
+        <p><strong>Status:</strong> Complete</p>
+        <p><strong>Follow-up Required:</strong> As per clinical notes and recommendations</p>
+      </div>
+    `;
+  };
+
+  const generateSignatureSection = (): string => {
+    return `
+      <div class="print-footer">
+        <div class="signature-section">
+          <div>
+            <div class="signature-line"></div>
+            <div class="signature-label">Screening Nurse Signature</div>
+            <div style="margin-top: 10pt;">Date: _______________</div>
+          </div>
+          <div>
+            <div class="signature-line"></div>
+            <div class="signature-label">Reviewing Physician Signature</div>
+            <div style="margin-top: 10pt;">Date: _______________</div>
+          </div>
+        </div>
+        <div style="margin-top: 20pt; text-align: center; font-size: 10pt;">
+          <p>This report was generated by the School Health Screening System</p>
+          <p>For questions or concerns, please contact the school health office</p>
+        </div>
+      </div>
+    `;
+  };
+
+  const getVitalStatus = (value: number, type: string): string => {
+    // Simple vital sign status assessment
+    switch (type) {
+      case 'heartRate':
+        if (value < 60) return 'Low';
+        if (value > 100) return 'High';
+        return 'Normal';
+      case 'bloodPressure':
+        if (value < 90) return 'Low';
+        if (value > 140) return 'High';
+        return 'Normal';
+      case 'temperature':
+        if (value < 36.1) return 'Low';
+        if (value > 37.2) return 'Elevated';
+        return 'Normal';
+      case 'oxygenSaturation':
+        if (value < 95) return 'Low';
+        return 'Normal';
+      default:
+        return 'N/A';
+    }
   };
   
   const handleSaveReportData = () => {
