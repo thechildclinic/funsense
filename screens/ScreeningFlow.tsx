@@ -10,6 +10,7 @@ import StudentIdentificationStep from './screening_steps/StudentIdentificationSt
 import AnthropometryStep from './screening_steps/AnthropometryStep';
 import SpecializedImagingStep from './screening_steps/SpecializedImagingStep';
 import VitalSignsStep from './screening_steps/VitalSignsStep';
+import DermatologyStep from './screening_steps/DermatologyStep';
 import { ReviewAndExportStep } from './screening_steps/ReviewAndExportStep'; // Changed to named import
 import Header from '../components/Header'; 
 
@@ -22,6 +23,7 @@ const screeningStepsOrder: ScreeningStep[] = [
     ScreeningStep.Anthropometry,
     ScreeningStep.SpecializedImaging,
     ScreeningStep.VitalSigns,
+    ScreeningStep.Dermatology,
     ScreeningStep.ReviewAndExport,
 ];
 
@@ -38,10 +40,12 @@ const ScreeningFlow: React.FC<ScreeningFlowProps> = ({ onScreeningEnd }) => {
         return <SpecializedImagingStep onScreeningEnd={onScreeningEnd} />;
       case ScreeningStep.VitalSigns:
         return <VitalSignsStep onScreeningEnd={onScreeningEnd} />;
+      case ScreeningStep.Dermatology:
+        return <DermatologyStep onScreeningEnd={onScreeningEnd} />;
       case ScreeningStep.ReviewAndExport:
         return <ReviewAndExportStep onScreeningComplete={onScreeningEnd} />;
       default:
-        navigateToStep(ScreeningStep.StudentIdentification); 
+        navigateToStep(ScreeningStep.StudentIdentification);
         return <StudentIdentificationStep />;
     }
   };

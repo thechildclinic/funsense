@@ -1,17 +1,21 @@
-import React, { createContext, useState, useContext, ReactNode, useCallback } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useCallback, useEffect } from 'react';
 import { ScreeningStep, ScreeningData, PatientInfo, ImageAnalysisItem, VitalSign } from '../types';
 import { DEFAULT_PATIENT_DATA, STEP_ICONS } from '../constants';
 import { FaHeartbeat, FaPercent, FaThermometerFull, FaVial } from 'react-icons/fa'; // For default icons
+import { saveScreeningData, getScreeningData } from '../services/screeningStorageService';
 
 interface ScreeningContextType {
   currentStep: ScreeningStep;
   screeningData: ScreeningData;
+  currentStudentId: string | null;
   setStudentInfo: (info: Partial<PatientInfo>) => void;
   updateScreeningData: (data: Partial<ScreeningData> | ((prev: ScreeningData) => ScreeningData)) => void;
   navigateToStep: (step: ScreeningStep) => void;
   nextStep: () => void;
   previousStep: () => void;
   resetScreening: () => void;
+  loadStudentData: (studentId: string) => boolean;
+  saveCurrentScreening: (status?: 'in_progress' | 'completed') => void;
   getStudentDisplayName: () => string;
   markStepAsSkipped: (step: ScreeningStep, reason: string) => void;
   unskipStep: (step: ScreeningStep) => void;
@@ -60,6 +64,7 @@ const ScreeningContext = createContext<ScreeningContextType | undefined>(undefin
 export const ScreeningContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentStep, setCurrentStep] = useState<ScreeningStep>(ScreeningStep.StudentIdentification);
   const [screeningData, setScreeningData] = useState<ScreeningData>(defaultScreeningData);
+  const [currentStudentId, setCurrentStudentId] = useState<string | null>(null);
 
   const stepOrder: ScreeningStep[] = [
     ScreeningStep.StudentIdentification,
@@ -74,7 +79,12 @@ export const ScreeningContextProvider: React.FC<{ children: ReactNode }> = ({ ch
       ...prev,
       patientInfo: { ...prev.patientInfo, ...info }
     }));
-  }, []);
+
+    // Extract student ID from info if provided
+    if (info.studentId?.value && info.studentId.value !== currentStudentId) {
+      setCurrentStudentId(info.studentId.value);
+    }
+  }, [currentStudentId]);
 
   const updateScreeningData = useCallback((data: Partial<ScreeningData> | ((prev: ScreeningData) => ScreeningData)) => {
     if (typeof data === 'function') {
@@ -116,6 +126,44 @@ export const ScreeningContextProvider: React.FC<{ children: ReactNode }> = ({ ch
       };
     });
   }, []);
+
+  const loadStudentData = useCallback((studentId: string): boolean => {
+    try {
+      const storedData = getScreeningData(studentId);
+      if (storedData) {
+        setScreeningData(storedData);
+        setCurrentStudentId(studentId);
+        console.log(`Loaded existing data for student ${studentId}`);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error loading student data:', error);
+      return false;
+    }
+  }, []);
+
+  const saveCurrentScreening = useCallback((status: 'in_progress' | 'completed' = 'in_progress') => {
+    if (currentStudentId) {
+      try {
+        saveScreeningData(currentStudentId, screeningData, status);
+        console.log(`Screening data saved for student ${currentStudentId} with status: ${status}`);
+      } catch (error) {
+        console.error('Error saving screening data:', error);
+      }
+    }
+  }, [currentStudentId, screeningData]);
+
+  // Auto-save when screening data changes
+  useEffect(() => {
+    if (currentStudentId && screeningData.patientInfo?.studentId?.value) {
+      const timeoutId = setTimeout(() => {
+        saveCurrentScreening('in_progress');
+      }, 2000); // Auto-save after 2 seconds of inactivity
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [screeningData, currentStudentId, saveCurrentScreening]);
 
   const navigateToStep = (step: ScreeningStep) => {
     setCurrentStep(step);
@@ -163,15 +211,18 @@ export const ScreeningContextProvider: React.FC<{ children: ReactNode }> = ({ ch
   };
 
   return (
-    <ScreeningContext.Provider value={{ 
-        currentStep, 
-        screeningData, 
+    <ScreeningContext.Provider value={{
+        currentStep,
+        screeningData,
+        currentStudentId,
         setStudentInfo,
-        updateScreeningData, 
-        navigateToStep, 
-        nextStep, 
-        previousStep, 
+        updateScreeningData,
+        navigateToStep,
+        nextStep,
+        previousStep,
         resetScreening,
+        loadStudentData,
+        saveCurrentScreening,
         getStudentDisplayName,
         markStepAsSkipped,
         unskipStep,

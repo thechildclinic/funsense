@@ -1,5 +1,5 @@
 import { HarmCategory, HarmBlockThreshold } from '@google/genai';
-import { FaUserMd, FaWeight, FaChartLine, FaHeartbeat, FaFileMedicalAlt, FaAssistiveListeningSystems, FaNotesMedical, FaTooth, FaLungs, FaThermometerFull, FaPercent, FaVial, FaStethoscope, FaChild, FaRulerVertical, FaBalanceScale, FaCameraRetro, FaHeadSideVirus, FaSmileBeam, FaMobileAlt, FaUserNurse, FaArrowsAltH, FaStreetView, FaCog } from 'react-icons/fa'; // Added FaThermometerFull, FaPercent, FaVial, FaCog
+import { FaUserMd, FaWeight, FaChartLine, FaHeartbeat, FaFileMedicalAlt, FaAssistiveListeningSystems, FaNotesMedical, FaTooth, FaLungs, FaThermometerFull, FaPercent, FaVial, FaStethoscope, FaChild, FaRulerVertical, FaBalanceScale, FaCameraRetro, FaHeadSideVirus, FaSmileBeam, FaMobileAlt, FaUserNurse, FaArrowsAltH, FaStreetView, FaCog, FaEye } from 'react-icons/fa'; // Added FaThermometerFull, FaPercent, FaVial, FaCog, FaEye for dermatology
 import { FaUserDoctor, FaEarListen, FaQrcode } from "react-icons/fa6";
 import { PatientInfo, ScreeningStep, AppSettings } from './types'; // Added import for ScreeningStep and AppSettings
 
@@ -53,11 +53,27 @@ export const PROMPTS = {
   FACE_WELLNESS_OBSERVATION: "This is a frontal face image. Provide a brief, general wellness observation based on appearance (e.g., 'appears alert'). This is not a diagnostic assessment. Keep it very general and positive if no obvious distress is visible. Note this is a simulated analysis based on visual appearance only.",
   SIMULATED_STETHOSCOPE_ANALYSIS: (area: 'heart' | 'lungs', context: string): string => `This is a simulated ${area} auscultation for educational purposes. Context: ${context}. Describe what clear sounds generally indicate (e.g., 'For lungs, clear sounds suggest good air entry.'). If there were common abnormalities, what might they generally suggest (e.g., 'Crackles in lungs can suggest fluid, wheezes indicate narrowed airways. For heart, murmurs might indicate turbulent blood flow.'). Emphasize this is a SIMULATION and NOT a real finding based on actual audio. This is general educational information.`,
   DEVICE_DISPLAY_OCR: (deviceName: string): string => `Extract the primary reading from this image of a ${deviceName} display. Include units if visible. If multiple values, prioritize the main physiological measurement. If unclear, state 'Reading unclear'.`,
+  DERMATOLOGY_ANALYSIS: `Analyze this image for dermatological assessment in a school health screening context. Provide a professional evaluation focusing on:
+
+1. Overall skin condition and appearance
+2. Any visible lesions, moles, birthmarks, or abnormalities
+3. Signs of rashes, irritation, inflammation, or infection
+4. Skin texture, color variations, or unusual patterns
+5. Any areas that may require follow-up attention
+
+Please provide:
+- Objective visual observations
+- General skin health assessment
+- Educational information about common skin conditions
+- Recommendations for follow-up if any concerning features are noted
+
+IMPORTANT: This is a screening assessment, not a diagnosis. Always recommend professional dermatological consultation for any concerning findings. Keep the language appropriate for a school health screening report.`,
+
   SCREENING_SUMMARY_REPORT: (data: string): string => // data will be a stringified version of ScreeningData
-    `Generate a concise health screening summary report based on the following data for a student. This report will be validated by a doctor. Structure it with clear sections: Patient Information (including any Pre-existing Conditions if provided), Anthropometry, ENT Examination, Dental Examination, Vital Signs.
+    `Generate a concise health screening summary report based on the following data for a student. This report will be validated by a doctor. Structure it with clear sections: Patient Information (including any Pre-existing Conditions if provided), Anthropometry, ENT Examination, Dental Examination, Vital Signs, Dermatology Assessment.
     For each section/module: if the data for that module indicates it was skipped (e.g., in a 'skippedSteps' field with a reason), clearly state "This module was skipped. Reason: [provided reason]." and do not attempt to summarize missing data for it. Otherwise, summarize the available data for the module.
-    Incorporate Nurse's General Observations and Preliminary Notes for Doctor into relevant sections or as general notes. 
-    Highlight any observations that might warrant further attention based on general parameters, but DO NOT provide a diagnosis or medical advice. 
+    Incorporate Nurse's General Observations and Preliminary Notes for Doctor into relevant sections or as general notes.
+    Highlight any observations that might warrant further attention based on general parameters, but DO NOT provide a diagnosis or medical advice.
     IMPORTANT: Prioritize directly measured or OCR-scanned vital signs (BP, SpO2, Temp, Hb) over any simulated or visually estimated vitals if both are present. Clearly label the source/method of each vital.
     If video was captured for any imaging, mention that the summary is based on a still frame and the full video is available for detailed review.
     Data: ${data}`,
@@ -75,13 +91,14 @@ export const STEP_ICONS = {
   'ENT': FaEarListen,
   'Dental': FaSmileBeam,
   [ScreeningStep.VitalSigns]: FaHeartbeat,
-  'FaceVitals': FaUserNurse, 
+  'FaceVitals': FaUserNurse,
   'Stethoscope': FaStethoscope,
   'DeviceVitals': FaMobileAlt,
   'BP': FaHeartbeat, // FaTint was used for BP card, FaHeartbeat can be generic for vitals step icon
   'SpO2': FaPercent,
   'Temperature': FaThermometerFull,
   'Hemoglobin': FaVial,
+  [ScreeningStep.Dermatology]: FaEye,
   [ScreeningStep.ReviewAndExport]: FaFileMedicalAlt,
   'Settings': FaCog,
 };

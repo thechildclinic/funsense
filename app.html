@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Health Screening System - Full Application</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Suppress Tailwind production warning
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('cdn.tailwindcss.com should not be used in production')) {
+                return;
+            }
+            originalWarn.apply(console, args);
+        };
+        tailwind.config = { corePlugins: { preflight: false } }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #dbeafe 100%);
+            min-height: 100vh;
+        }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .brand-light-blue { color: #0ea5e9; }
+        .brand-cyan { color: #06b6d4; }
+        .step-tab { transition: all 0.2s ease-in-out; }
+        .step-tab.active { background: #3b82f6; color: white; }
+        .step-tab:hover { background: #60a5fa; color: white; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-stethoscope text-2xl brand-light-blue"></i>
+                    <h1 class="text-xl font-bold text-slate-700">School Health Screening System</h1>
+                </div>
+                <div class="text-sm text-slate-600">
+                    Student: <span id="currentStudent" class="font-semibold">STU123 - John Doe</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step Navigation -->
+    <div class="bg-white/90 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex overflow-x-auto py-2 gap-1">
+                <button onclick="showStep(1)" class="step-tab px-4 py-2 rounded text-sm whitespace-nowrap flex items-center gap-2" id="tab1">
+                    <i class="fas fa-user"></i> 1. Student ID
+                </button>
+                <button onclick="showStep(2)" class="step-tab px-4 py-2 rounded text-sm whitespace-nowrap flex items-center gap-2" id="tab2">
+                    <i class="fas fa-ruler"></i> 2. Anthropometry
+                </button>
+                <button onclick="showStep(3)" class="step-tab px-4 py-2 rounded text-sm whitespace-nowrap flex items-center gap-2" id="tab3">
+                    <i class="fas fa-camera"></i> 3. Imaging
+                </button>
+                <button onclick="showStep(4)" class="step-tab px-4 py-2 rounded text-sm whitespace-nowrap flex items-center gap-2 bg-green-100 text-green-700" id="tab4">
+                    <i class="fas fa-hand-paper"></i> 4. 🆕 Dermatology
+                </button>
+                <button onclick="showStep(5)" class="step-tab px-4 py-2 rounded text-sm whitespace-nowrap flex items-center gap-2" id="tab5">
+                    <i class="fas fa-heartbeat"></i> 5. Vitals
+                </button>
+                <button onclick="showStep(6)" class="step-tab px-4 py-2 rounded text-sm whitespace-nowrap flex items-center gap-2" id="tab6">
+                    <i class="fas fa-file-export"></i> 6. Review
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-6 max-w-6xl">
+        <!-- Step 1: Student Identification -->
+        <div id="step1" class="step-content hidden">
+            <div class="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                <h2 class="text-xl font-semibold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user brand-light-blue"></i>
+                    Student Identification
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Student ID</label>
+                        <input type="text" value="STU123" class="w-full p-3 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Full Name</label>
+                        <input type="text" value="John Doe" class="w-full p-3 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Age</label>
+                        <input type="number" value="12" class="w-full p-3 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-2">Gender</label>
+                        <select class="w-full p-3 border rounded-lg">
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Pre-existing Conditions</label>
+                    <textarea class="w-full p-3 border rounded-lg" rows="3" placeholder="Any known medical conditions..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Anthropometry -->
+        <div id="step2" class="step-content hidden">
+            <div class="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                <h2 class="text-xl font-semibold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fas fa-ruler brand-light-blue"></i>
+                    Anthropometry
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-blue-800 mb-2">Height Measurement</h3>
+                        <div class="text-2xl font-bold text-blue-600">150 cm</div>
+                        <p class="text-sm text-blue-600">AI-measured from image</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-green-800 mb-2">Weight Measurement</h3>
+                        <div class="text-2xl font-bold text-green-600">45 kg</div>
+                        <p class="text-sm text-green-600">OCR from scale display</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-purple-800 mb-2">BMI Calculation</h3>
+                        <div class="text-2xl font-bold text-purple-600">20.0</div>
+                        <p class="text-sm text-purple-600">Normal range</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Specialized Imaging -->
+        <div id="step3" class="step-content hidden">
+            <div class="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                <h2 class="text-xl font-semibold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fas fa-camera brand-light-blue"></i>
+                    Specialized Imaging
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-yellow-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-yellow-800 mb-2">ENT Examination</h3>
+                        <p class="text-sm text-yellow-700 mb-2">Ear, Nose, Throat assessment</p>
+                        <div class="text-sm text-yellow-600">✅ Completed - Normal findings</div>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-orange-800 mb-2">Dental Examination</h3>
+                        <p class="text-sm text-orange-700 mb-2">Oral cavity assessment</p>
+                        <div class="text-sm text-orange-600">✅ Completed - Good oral health</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: NEW DERMATOLOGY MODULE -->
+        <div id="step4" class="step-content">
+            <div class="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold text-slate-700 flex items-center gap-2">
+                        <i class="fas fa-hand-paper brand-light-blue"></i>
+                        🆕 Dermatology / Skin Assessment
+                    </h2>
+                    <div class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                        NEW MODULE
+                    </div>
+                </div>
+
+                <!-- General Skin Observations -->
+                <div class="mb-6 p-4 border border-gray-200 rounded-lg bg-white">
+                    <h3 class="text-lg font-medium text-slate-600 mb-3 flex items-center gap-2">
+                        <i class="fas fa-eye brand-cyan"></i>
+                        General Skin Observations
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">Record overall skin condition, noting any areas of concern or general skin health observations.</p>
+                    <textarea
+                        id="generalSkinObs"
+                        placeholder="Record overall skin condition, noting any areas of concern or general skin health observations..."
+                        class="w-full p-3 border rounded-md text-sm min-h-[100px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >Overall skin appears healthy with good hydration. No significant areas of concern noted. Student reports no skin-related symptoms or recent changes.</textarea>
+                </div>
+
+                <!-- Skin Lesions Section -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-slate-600 flex items-center gap-2">
+                            <i class="fas fa-hand-paper brand-cyan"></i>
+                            Documented Skin Lesions
+                        </h3>
+                        <button
+                            onclick="showAddLesionForm()"
+                            class="bg-green-500 text-white px-4 py-2 rounded text-sm hover:bg-green-600 flex items-center gap-2 transition-colors"
+                        >
+                            <i class="fas fa-plus"></i> Add Lesion
+                        </button>
+                    </div>
+
+                    <!-- Sample Lesions Display -->
+                    <div id="lesionsList" class="space-y-4 mb-4">
+                        <!-- Sample Lesion 1 -->
+                        <div class="p-4 border border-gray-200 rounded-lg bg-white animate-fadeIn lesion-card">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm mb-3">
+                                        <div><strong>Location:</strong> Left forearm</div>
+                                        <div><strong>Nature:</strong> Mole/Nevus</div>
+                                        <div><strong>Symptoms:</strong> None</div>
+                                    </div>
+                                    <div class="text-sm mb-3">
+                                        <strong>Notes:</strong> Small (3mm), dark brown, round mole. Smooth surface, slightly raised. Student reports no changes in size or color over past year.
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="w-32 h-24 bg-gradient-to-br from-amber-100 to-amber-200 rounded border flex items-center justify-center text-amber-700 text-xs">
+                                            📷 Lesion Photo
+                                        </div>
+                                    </div>
+                                    <div class="text-xs bg-blue-50 p-3 rounded border-l-4 border-blue-400">
+                                        <strong>🤖 AI Analysis:</strong> Visual Description: Small (approximately 3mm), dark brown, round lesion with regular borders and uniform color. Surface appears smooth and slightly raised. Educational Notes: This appears consistent with a common benign nevus (mole). Regular monitoring recommended for any changes in size, color, or shape. Recommendation: Professional evaluation advised for baseline documentation.
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 ml-4">
+                                    <button onclick="editLesion(1)" class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 flex items-center gap-1">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button onclick="deleteLesion(1)" class="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 flex items-center gap-1">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sample Lesion 2 -->
+                        <div class="p-4 border border-gray-200 rounded-lg bg-white animate-fadeIn lesion-card">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm mb-3">
+                                        <div><strong>Location:</strong> Right shoulder</div>
+                                        <div><strong>Nature:</strong> Freckle</div>
+                                        <div><strong>Symptoms:</strong> None</div>
+                                    </div>
+                                    <div class="text-sm mb-3">
+                                        <strong>Notes:</strong> Multiple small freckles clustered on right shoulder. Light brown coloration, flat surface. Consistent with sun exposure pattern.
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="w-32 h-24 bg-gradient-to-br from-orange-100 to-orange-200 rounded border flex items-center justify-center text-orange-700 text-xs">
+                                            📷 Lesion Photo
+                                        </div>
+                                    </div>
+                                    <div class="text-xs bg-purple-50 p-3 rounded border-l-4 border-purple-400">
+                                        <strong>🤖 AI Analysis:</strong> Visual Description: Multiple small (1-2mm), light brown, flat lesions clustered together. Regular shape and uniform coloration. Educational Notes: These appear consistent with solar lentigines (freckles) commonly seen in sun-exposed areas. Recommendation: Sun protection education and regular monitoring advised.
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 ml-4">
+                                    <button onclick="editLesion(2)" class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 flex items-center gap-1">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button onclick="deleteLesion(2)" class="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 flex items-center gap-1">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Lesion Form (Hidden by default) -->
+                    <div id="addLesionForm" class="hidden mb-6 p-4 border-2 border-blue-300 rounded-lg bg-blue-50 animate-fadeIn">
+                        <h4 class="text-lg font-medium text-blue-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-plus-circle"></i>
+                            Add New Skin Lesion
+                        </h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-blue-700 mb-2">Location *</label>
+                                <select class="w-full p-2 border rounded text-sm focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select location...</option>
+                                    <option value="Face">Face</option>
+                                    <option value="Scalp">Scalp</option>
+                                    <option value="Neck">Neck</option>
+                                    <option value="Chest">Chest</option>
+                                    <option value="Back">Back</option>
+                                    <option value="Arms">Arms</option>
+                                    <option value="Hands">Hands</option>
+                                    <option value="Abdomen">Abdomen</option>
+                                    <option value="Legs">Legs</option>
+                                    <option value="Feet">Feet</option>
+                                    <option value="Other">Other (specify in notes)</option>
+                                </select>
+                                <p class="text-xs text-gray-600 mt-1">Select the body area where the lesion is located.</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-blue-700 mb-2">Nature/Type *</label>
+                                <select class="w-full p-2 border rounded text-sm focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select type...</option>
+                                    <option value="Mole/Nevus">Mole/Nevus</option>
+                                    <option value="Freckle">Freckle</option>
+                                    <option value="Rash">Rash</option>
+                                    <option value="Cut/Scratch">Cut/Scratch</option>
+                                    <option value="Bruise">Bruise</option>
+                                    <option value="Insect bite">Insect bite</option>
+                                    <option value="Eczema patch">Eczema patch</option>
+                                    <option value="Acne">Acne</option>
+                                    <option value="Wart">Wart</option>
+                                    <option value="Birthmark">Birthmark</option>
+                                    <option value="Other">Other (describe)</option>
+                                </select>
+                                <p class="text-xs text-gray-600 mt-1">Choose the type that best describes the lesion's appearance.</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-blue-700 mb-2">Symptoms</label>
+                                <select class="w-full p-2 border rounded text-sm focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select symptoms...</option>
+                                    <option value="None">None</option>
+                                    <option value="Itching">Itching</option>
+                                    <option value="Pain">Pain</option>
+                                    <option value="Burning">Burning</option>
+                                    <option value="Tenderness">Tenderness</option>
+                                    <option value="Bleeding">Bleeding</option>
+                                    <option value="Discharge">Discharge</option>
+                                    <option value="Swelling">Swelling</option>
+                                    <option value="Other">Other (describe)</option>
+                                </select>
+                                <p class="text-xs text-gray-600 mt-1">Select any symptoms associated with this lesion.</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-blue-700 mb-2">Nurse Notes</label>
+                            <textarea
+                                placeholder="Additional observations about size, color, texture, or other relevant details..."
+                                class="w-full p-3 border rounded text-sm min-h-[80px] focus:ring-2 focus:ring-blue-500"
+                            ></textarea>
+                            <p class="text-xs text-gray-600 mt-1">Document additional observations about size, color, texture, or any other relevant details.</p>
+                        </div>
+
+                        <!-- Camera Section -->
+                        <div class="mb-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <label class="text-sm font-medium text-blue-700">Lesion Image</label>
+                                <button
+                                    onclick="toggleCamera()"
+                                    class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 flex items-center gap-1"
+                                >
+                                    <i class="fas fa-camera"></i> Take Photo
+                                </button>
+                            </div>
+
+                            <div id="cameraSection" class="hidden">
+                                <div class="bg-gray-200 rounded-lg p-8 text-center text-gray-500 mb-3">
+                                    <i class="fas fa-camera text-4xl mb-2"></i>
+                                    <p>Camera interface would appear here</p>
+                                    <p class="text-sm">Position camera to clearly show the skin lesion</p>
+                                    <button onclick="simulateCapture()" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                        📷 Simulate Capture
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="capturedImage" class="hidden">
+                                <div class="w-64 h-48 bg-gradient-to-br from-green-100 to-green-200 rounded border flex items-center justify-center text-green-700 text-sm">
+                                    📷 Captured Lesion Photo
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Analysis Display -->
+                        <div id="aiAnalysis" class="hidden mb-4">
+                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                                <h5 class="font-medium text-purple-800 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-brain"></i>
+                                    AI Lesion Analysis
+                                </h5>
+                                <div class="text-sm text-purple-700">
+                                    <p><strong>Visual Description:</strong> Small (approximately 2-3mm), light brown, round lesion with regular borders. Surface appears smooth and flat.</p>
+                                    <p class="mt-2"><strong>Educational Notes:</strong> This appears consistent with a common freckle or solar lentigo. These are typically benign pigmented lesions caused by sun exposure.</p>
+                                    <p class="mt-2"><strong>Recommendation:</strong> Professional dermatological evaluation advised for any concerning changes. Regular monitoring and sun protection recommended.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button
+                                onclick="saveLesion()"
+                                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center gap-2"
+                            >
+                                <i class="fas fa-save"></i> Save Lesion
+                            </button>
+                            <button
+                                onclick="hideAddLesionForm()"
+                                class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onclick="analyzeWithAI()"
+                                class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 flex items-center gap-2"
+                            >
+                                <i class="fas fa-brain"></i> Analyze with AI
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 pt-4 border-t">
+                    <button onclick="saveProgress()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center gap-2">
+                        <i class="fas fa-save"></i> Save Progress
+                    </button>
+                    <button onclick="saveAndReturn()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center gap-2">
+                        <i class="fas fa-list"></i> Save & Return to Student List
+                    </button>
+                    <button onclick="showStep(5)" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Next Step: Vital Signs
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Vital Signs -->
+        <div id="step5" class="step-content hidden">
+            <div class="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                <h2 class="text-xl font-semibold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fas fa-heartbeat brand-light-blue"></i>
+                    Vital Signs
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-red-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-red-800 mb-2">Blood Pressure</h3>
+                        <div class="text-2xl font-bold text-red-600">120/80 mmHg</div>
+                        <p class="text-sm text-red-600">Normal range</p>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-blue-800 mb-2">SpO2</h3>
+                        <div class="text-2xl font-bold text-blue-600">98%</div>
+                        <p class="text-sm text-blue-600">Excellent</p>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-orange-800 mb-2">Temperature</h3>
+                        <div class="text-2xl font-bold text-orange-600">98.6°F</div>
+                        <p class="text-sm text-orange-600">Normal</p>
+                    </div>
+                    <div class="bg-pink-50 p-4 rounded-lg">
+                        <h3 class="font-medium text-pink-800 mb-2">Hemoglobin</h3>
+                        <div class="text-2xl font-bold text-pink-600">13.5 g/dL</div>
+                        <p class="text-sm text-pink-600">Normal range</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6: Review & Export -->
+        <div id="step6" class="step-content hidden">
+            <div class="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                <h2 class="text-xl font-semibold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fas fa-file-export brand-light-blue"></i>
+                    Review & Export
+                </h2>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                    <h3 class="font-semibold text-green-800 mb-2">🎉 Screening Complete!</h3>
+                    <p class="text-green-700 text-sm">
+                        All screening modules have been completed, including the new <strong>Dermatology/Skin Assessment</strong> module.
+                        The comprehensive health screening data is ready for review and export.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-blue-800 mb-2">📋 Screening Summary</h4>
+                        <ul class="text-sm text-blue-700 space-y-1">
+                            <li>✅ Student Identification: Complete</li>
+                            <li>✅ Anthropometry: BMI 20.0 (Normal)</li>
+                            <li>✅ Specialized Imaging: Normal findings</li>
+                            <li>✅ <strong>Dermatology: 2 lesions documented</strong></li>
+                            <li>✅ Vital Signs: All normal ranges</li>
+                        </ul>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-purple-800 mb-2">🤖 AI Analysis Summary</h4>
+                        <ul class="text-sm text-purple-700 space-y-1">
+                            <li>• Height/Weight: AI-measured</li>
+                            <li>• ENT/Dental: AI-analyzed</li>
+                            <li>• <strong>Skin Lesions: AI-assessed (2 lesions)</strong></li>
+                            <li>• Vital Signs: OCR-extracted</li>
+                            <li>• Overall: Comprehensive AI integration</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="exportData()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center gap-2">
+                        <i class="fas fa-download"></i> Export Screening Data
+                    </button>
+                    <button onclick="generateReport()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center gap-2">
+                        <i class="fas fa-file-medical"></i> Generate Medical Report
+                    </button>
+                    <button onclick="startNewScreening()" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Start New Screening
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Highlights -->
+    <div class="container mx-auto px-4 py-6 max-w-6xl">
+        <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 shadow-lg">
+            <h2 class="text-xl font-bold text-slate-700 mb-4 flex items-center gap-2">
+                <i class="fas fa-star text-yellow-500"></i>
+                🆕 New Dermatology Module Features
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                    <h3 class="font-semibold text-slate-600 mb-2">📋 Professional Documentation:</h3>
+                    <ul class="space-y-1 text-slate-600">
+                        <li>• Structured lesion recording (location, nature, symptoms)</li>
+                        <li>• Multiple lesion support with individual documentation</li>
+                        <li>• Professional nurse notes and observations</li>
+                        <li>• General skin condition assessment</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-slate-600 mb-2">🤖 AI-Powered Analysis:</h3>
+                    <ul class="space-y-1 text-slate-600">
+                        <li>• Intelligent skin lesion analysis using Google Gemini</li>
+                        <li>• Educational information about skin conditions</li>
+                        <li>• Professional recommendations for referral</li>
+                        <li>• Visual description of lesion characteristics</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-slate-600 mb-2">📱 User Experience:</h3>
+                    <ul class="space-y-1 text-slate-600">
+                        <li>• Camera integration for high-quality photography</li>
+                        <li>• Edit/delete functionality for lesion management</li>
+                        <li>• Mobile-responsive design for tablet use</li>
+                        <li>• Seamless integration with existing workflow</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentStepIndex = 4; // Start with Dermatology step to showcase new feature
+        let lesionCount = 2;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            showStep(4); // Show dermatology step by default
+        });
+
+        // Step Navigation
+        function showStep(stepNumber) {
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(step => {
+                step.classList.add('hidden');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.step-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected step
+            document.getElementById('step' + stepNumber).classList.remove('hidden');
+            document.getElementById('tab' + stepNumber).classList.add('active');
+
+            currentStepIndex = stepNumber;
+        }
+
+        // Dermatology Module Functions
+        function showAddLesionForm() {
+            document.getElementById('addLesionForm').classList.remove('hidden');
+            document.getElementById('addLesionForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideAddLesionForm() {
+            document.getElementById('addLesionForm').classList.add('hidden');
+            // Reset form
+            document.querySelectorAll('#addLesionForm select').forEach(select => select.selectedIndex = 0);
+            document.querySelectorAll('#addLesionForm textarea').forEach(textarea => textarea.value = '');
+            document.getElementById('cameraSection').classList.add('hidden');
+            document.getElementById('capturedImage').classList.add('hidden');
+            document.getElementById('aiAnalysis').classList.add('hidden');
+        }
+
+        function toggleCamera() {
+            const cameraSection = document.getElementById('cameraSection');
+            cameraSection.classList.toggle('hidden');
+        }
+
+        function simulateCapture() {
+            document.getElementById('cameraSection').classList.add('hidden');
+            document.getElementById('capturedImage').classList.remove('hidden');
+            showNotification('📷 Photo captured successfully!', 'success');
+        }
+
+        function analyzeWithAI() {
+            showNotification('🤖 Analyzing lesion with AI...', 'info');
+            setTimeout(() => {
+                document.getElementById('aiAnalysis').classList.remove('hidden');
+                showNotification('✅ AI analysis complete!', 'success');
+            }, 2000);
+        }
+
+        function saveLesion() {
+            lesionCount++;
+            showNotification('💾 Lesion saved successfully!', 'success');
+            hideAddLesionForm();
+        }
+
+        function editLesion(id) {
+            showNotification('✏️ Edit functionality would open lesion details for editing', 'info');
+        }
+
+        function deleteLesion(id) {
+            if (confirm('Are you sure you want to delete this lesion documentation?')) {
+                showNotification('🗑️ Lesion documentation deleted', 'warning');
+            }
+        }
+
+        // General Functions
+        function saveProgress() {
+            showNotification('💾 Progress saved successfully!', 'success');
+        }
+
+        function saveAndReturn() {
+            showNotification('💾 Screening saved. Returning to student list...', 'success');
+        }
+
+        function exportData() {
+            showNotification('📤 Exporting comprehensive screening data including dermatology findings...', 'info');
+        }
+
+        function generateReport() {
+            showNotification('📋 Generating medical report with AI analysis and dermatology assessment...', 'info');
+        }
+
+        function startNewScreening() {
+            if (confirm('Start a new screening? Current progress will be saved.')) {
+                showNotification('🆕 Starting new screening...', 'info');
+                setTimeout(() => showStep(1), 1000);
+            }
+        }
+
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+
+            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fadeIn`;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1': case '2': case '3': case '4': case '5': case '6':
+                        e.preventDefault();
+                        showStep(parseInt(e.key));
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        saveProgress();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

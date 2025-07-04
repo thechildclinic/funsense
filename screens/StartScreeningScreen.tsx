@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useScreeningContext, ScreeningContextProvider } from '../contexts/ScreeningContext'; 
+import { useScreeningContext, ScreeningContextProvider } from '../contexts/ScreeningContext';
 import { PatientInfo, ManualEntryField } from '../types';
 import { APP_TITLE, DEFAULT_PATIENT_DATA } from '../constants';
-import { FaQrcode, FaKeyboard } from 'react-icons/fa'; 
+import { FaQrcode, FaKeyboard } from 'react-icons/fa';
 import { FaUserDoctor } from 'react-icons/fa6';
 
 
@@ -11,7 +11,7 @@ interface StartScreeningScreenProps {
 }
 
 const StartScreeningScreenInternal: React.FC<StartScreeningScreenProps> = ({ onScreeningStart }) => {
-  const { setStudentInfo } = useScreeningContext(); 
+  const { setStudentInfo } = useScreeningContext();
   const [showManualForm, setShowManualForm] = useState(false);
   const [formData, setFormData] = useState<Partial<PatientInfo>>(DEFAULT_PATIENT_DATA);
   const [qrIdInput, setQrIdInput] = useState('');
@@ -61,7 +61,7 @@ const StartScreeningScreenInternal: React.FC<StartScreeningScreenProps> = ({ onS
       return;
     }
     setStudentInfo({
-        manualId: formData.manualId, 
+        manualId: formData.manualId,
         name: formData.name,
         age: formData.age,
         gender: formData.gender,
@@ -70,6 +70,8 @@ const StartScreeningScreenInternal: React.FC<StartScreeningScreenProps> = ({ onS
     });
     onScreeningStart();
   };
+
+
 
   return (
     <div className="flex flex-col items-center justify-center p-4 min-h-[calc(100vh-150px)] animate-fadeIn">
@@ -157,6 +159,8 @@ const StartScreeningScreenInternal: React.FC<StartScreeningScreenProps> = ({ onS
           </form>
         )}
       </div>
+
+
     </div>
   );
 };

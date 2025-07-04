@@ -10,6 +10,7 @@ export enum ScreeningStep {
   Anthropometry = 'ANTHROPOMETRY', // Height, Weight, BMI
   SpecializedImaging = 'SPECIALIZED_IMAGING', // ENT, Dental
   VitalSigns = 'VITAL_SIGNS', // Face Vitals (sim), Stethoscope (sim), Devices
+  Dermatology = 'DERMATOLOGY', // Skin assessment and lesion documentation
   ReviewAndExport = 'REVIEW_AND_EXPORT',
 }
 
@@ -129,15 +130,16 @@ export interface ScreeningData {
   entData: Partial<EntData>;
   dentalData: Partial<DentalData>;
   faceVitalData: Partial<FaceVitalData>;
-  stethoscopeData: Partial<StethoscopeData>; 
+  stethoscopeData: Partial<StethoscopeData>;
   deviceVitals: Partial<DeviceVitalData>;
-  nurseGeneralObservations?: string; 
+  dermatologyAssessment?: Record<string, ImageAnalysisItem>; // Dermatology assessment by body area
+  nurseGeneralObservations?: string;
   finalReport?: {
     aiSummary?: string;
     // doctorValidationNotes changed to preliminaryNotesForDoctor
-    preliminaryNotesForDoctor?: string; 
+    preliminaryNotesForDoctor?: string;
   };
-  skippedSteps?: Partial<Record<ScreeningStep, string>>; 
+  skippedSteps?: Partial<Record<ScreeningStep, string>>;
 }
 
 export interface AnalysisResult {

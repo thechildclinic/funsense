@@ -1,19 +1,19 @@
 
 import React, { useState, useEffect } from 'react';
 import { useScreeningContext } from '../../contexts/ScreeningContext';
-import { ScreeningData, ImageAnalysisItem, ScreeningStep, PatientInfo, VitalSign, ManualEntryField } from '../../types'; 
+import { ScreeningData, ImageAnalysisItem, ScreeningStep, PatientInfo, VitalSign, ManualEntryField } from '../../types';
 import { generateTextWithGemini } from '../../services/geminiService';
 import { PROMPTS, STEP_ICONS } from '../../constants';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { FaFileMedicalAlt, FaPrint, FaShareSquare, FaRedo, FaBrain, FaNotesMedical, FaSave, FaCheckCircle, FaBan, FaUpload } from 'react-icons/fa';
-import { clearActiveScreening, saveActiveScreening } from '../../services/localStorageService'; 
+import { clearActiveScreening, saveActiveScreening } from '../../services/localStorageService';
 
 interface ReviewAndExportStepProps {
     onScreeningComplete: () => void; 
 }
 
 export const ReviewAndExportStep: React.FC<ReviewAndExportStepProps> = ({ onScreeningComplete }) => {
-  const { screeningData, resetScreening, getStudentDisplayName, updateScreeningData } = useScreeningContext();
+  const { screeningData, resetScreening, getStudentDisplayName, updateScreeningData, saveCurrentScreening, currentStudentId } = useScreeningContext();
   
   const [aiSummary, setAiSummary] = useState(screeningData.finalReport?.aiSummary || '');
   const [preliminaryNotesForDoctor, setPreliminaryNotesForDoctor] = useState(screeningData.finalReport?.preliminaryNotesForDoctor || '');
@@ -110,23 +110,28 @@ export const ReviewAndExportStep: React.FC<ReviewAndExportStepProps> = ({ onScre
   };
 
   const handleSubmitToServer = async () => {
-    handleSaveReportData(); 
+    handleSaveReportData();
     setSubmitStatus('submitting');
 
-    console.log("Submitting to server (simulated):", screeningData);
-    await new Promise(resolve => setTimeout(resolve, 1500)); 
+    // Save as completed in local storage
+    if (currentStudentId) {
+      saveCurrentScreening('completed');
+    }
 
-    const success = Math.random() > 0.1; 
+    console.log("Submitting to server (simulated):", screeningData);
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    const success = Math.random() > 0.1;
 
     if (success) {
         setSubmitStatus('success');
         const studentIdToClear = screeningData.patientInfo.manualId || screeningData.patientInfo.qrId;
         if (studentIdToClear) {
-            clearActiveScreening(studentIdToClear); 
+            clearActiveScreening(studentIdToClear);
         }
         setTimeout(() => {
-            resetScreening(); 
-            onScreeningComplete(); 
+            resetScreening();
+            onScreeningComplete();
             setSubmitStatus('idle');
         }, 2000);
     } else {

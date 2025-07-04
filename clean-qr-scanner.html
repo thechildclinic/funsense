@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Health Screening - QR Scanner</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #dbeafe 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .doctor-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #0ea5e9;
+        }
+        
+        h1 {
+            color: #334155;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+        
+        .qr-section {
+            background: #dbeafe;
+            border: 2px solid #93c5fd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .qr-label {
+            color: #1e40af;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .qr-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: border-color 0.2s;
+        }
+        
+        .qr-input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        }
+        
+        .helper-text {
+            color: #6b7280;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+        
+        .manual-form {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #92400e;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .form-textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-back {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .success-message {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            color: #065f46;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .doctor-icon {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="doctor-icon">👨‍⚕️</div>
+        <h1>School Health Screening</h1>
+        <p class="subtitle">Start a new student health screening session.</p>
+        
+        <div id="qr-section">
+            <div class="qr-section">
+                <label class="qr-label">Student ID (Simulate QR Scan)</label>
+                <input 
+                    type="text" 
+                    id="qr-input" 
+                    class="qr-input" 
+                    placeholder="Enter Student ID"
+                    autocomplete="off"
+                >
+                <button class="btn-primary" onclick="startWithQR()">
+                    📱 Start with Student ID
+                </button>
+                <p class="helper-text">Enter the student's ID to simulate scanning a QR code.</p>
+            </div>
+            
+            <button class="btn-secondary" onclick="showManualForm()">
+                ⌨️ Enter Student Manually
+            </button>
+        </div>
+        
+        <div id="manual-form" class="manual-form hidden">
+            <h3 style="color: #92400e; margin-bottom: 15px;">Manual Student Entry</h3>
+            
+            <div class="form-group">
+                <label class="form-label">Manual Student ID *</label>
+                <input type="text" id="manual-id" class="form-input" placeholder="e.g., S12345" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Student Name *</label>
+                <input type="text" id="student-name" class="form-input" placeholder="e.g., John Doe" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" id="student-age" class="form-input" placeholder="e.g., 10" min="5" max="18">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select id="student-gender" class="form-select">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Pre-existing Conditions / Known Diseases</label>
+                <textarea id="conditions" class="form-textarea" placeholder="e.g., Asthma, Allergy to nuts"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Reason for Manual Student Entry</label>
+                <input type="text" id="manual-reason" class="form-input" placeholder="e.g., QR Code damaged">
+            </div>
+            
+            <div class="form-buttons">
+                <button class="btn-back" onclick="hideManualForm()">Back</button>
+                <button class="btn-submit" onclick="startWithManual()">Start Screening</button>
+            </div>
+        </div>
+        
+        <div id="success-message" class="success-message hidden">
+            <h3 style="margin-bottom: 10px;">✅ Screening Started Successfully!</h3>
+            <p id="student-info"></p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">
+                <strong>Next:</strong> The student would now proceed through the health screening workflow.
+            </p>
+            <button class="btn-primary" onclick="resetForm()" style="margin-top: 15px;">
+                🔄 Start New Screening
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function startWithQR() {
+            const qrInput = document.getElementById('qr-input');
+            const studentId = qrInput.value.trim();
+            
+            if (!studentId) {
+                alert('Please enter a Student ID to simulate QR scanning.');
+                qrInput.focus();
+                return;
+            }
+            
+            // Simulate QR scan success
+            const studentData = {
+                id: studentId,
+                name: `Student ${studentId}`,
+                age: '10',
+                gender: 'Unknown',
+                method: 'QR Code Scan'
+            };
+            
+            showSuccess(studentData);
+        }
+        
+        function showManualForm() {
+            document.getElementById('qr-section').classList.add('hidden');
+            document.getElementById('manual-form').classList.remove('hidden');
+        }
+        
+        function hideManualForm() {
+            document.getElementById('manual-form').classList.add('hidden');
+            document.getElementById('qr-section').classList.remove('hidden');
+        }
+        
+        function startWithManual() {
+            const manualId = document.getElementById('manual-id').value.trim();
+            const studentName = document.getElementById('student-name').value.trim();
+            
+            if (!manualId || !studentName) {
+                alert('Please enter at least Student ID and Student Name.');
+                return;
+            }
+            
+            const studentData = {
+                id: manualId,
+                name: studentName,
+                age: document.getElementById('student-age').value || 'Not specified',
+                gender: document.getElementById('student-gender').value || 'Not specified',
+                conditions: document.getElementById('conditions').value || 'None reported',
+                reason: document.getElementById('manual-reason').value || 'Not specified',
+                method: 'Manual Entry'
+            };
+            
+            showSuccess(studentData);
+        }
+        
+        function showSuccess(studentData) {
+            // Hide form sections
+            document.getElementById('qr-section').classList.add('hidden');
+            document.getElementById('manual-form').classList.add('hidden');
+            
+            // Show success message
+            const successDiv = document.getElementById('success-message');
+            const studentInfo = document.getElementById('student-info');
+            
+            studentInfo.innerHTML = `
+                <strong>Student Information:</strong><br>
+                • ID: ${studentData.id}<br>
+                • Name: ${studentData.name}<br>
+                • Age: ${studentData.age}<br>
+                • Gender: ${studentData.gender}<br>
+                • Entry Method: ${studentData.method}
+                ${studentData.conditions ? `<br>• Conditions: ${studentData.conditions}` : ''}
+                ${studentData.reason ? `<br>• Manual Entry Reason: ${studentData.reason}` : ''}
+            `;
+            
+            successDiv.classList.remove('hidden');
+        }
+        
+        function resetForm() {
+            // Clear all inputs
+            document.getElementById('qr-input').value = '';
+            document.getElementById('manual-id').value = '';
+            document.getElementById('student-name').value = '';
+            document.getElementById('student-age').value = '';
+            document.getElementById('student-gender').value = '';
+            document.getElementById('conditions').value = '';
+            document.getElementById('manual-reason').value = '';
+            
+            // Hide success message and manual form
+            document.getElementById('success-message').classList.add('hidden');
+            document.getElementById('manual-form').classList.add('hidden');
+            
+            // Show QR section
+            document.getElementById('qr-section').classList.remove('hidden');
+        }
+        
+        // Enter key support for QR input
+        document.getElementById('qr-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startWithQR();
+            }
+        });
+        
+        // Focus on QR input when page loads
+        window.addEventListener('load', function() {
+            document.getElementById('qr-input').focus();
+        });
+    </script>
+</body>
+</html>

@@ -103,11 +103,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             <p className="text-xs text-slate-500 mt-1">This removes all incomplete student screening data saved on this device. Submitted data is not affected.</p>
           </div>
 
-          {/* Placeholder for Device SDK Connections */}
+          {/* Future Integrations */}
           <div className="pt-3 border-t border-gray-200">
-            <h3 className="text-md font-medium text-slate-700 mb-1">External Device Integrations</h3>
+            <h3 className="text-md font-medium text-slate-700 mb-1">Future Integrations</h3>
             <p className="text-sm text-slate-500 p-3 bg-gray-100 rounded-md">
-              (Placeholder) Future section for connecting and managing SDK-based devices (e.g., specific stethoscopes, glucose meters).
+              AI provider selection and AyuSync SDK integration will be available in future updates.
             </p>
           </div>
         </div>
@@ -121,6 +121,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
       </div>
+
+
     </div>
   );
 };

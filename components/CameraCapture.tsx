@@ -74,7 +74,17 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({
         audio: captureMode === 'video' ? (settings.preferredMicrophoneId ? { deviceId: { exact: settings.preferredMicrophoneId } } : enableAudio) : false,
     });
 
-    // 3. Generic Fallback (any video device)
+    // 3. Lower resolution fallback for USB cameras
+    constraintsToTry.push({
+        video: {
+            facingMode: currentFacingMode,
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+        },
+        audio: captureMode === 'video' ? (settings.preferredMicrophoneId ? { deviceId: { exact: settings.preferredMicrophoneId } } : enableAudio) : false,
+    });
+
+    // 4. Generic Fallback (any video device)
     constraintsToTry.push({
         video: true,
         audio: captureMode === 'video' ? (settings.preferredMicrophoneId ? { deviceId: { exact: settings.preferredMicrophoneId } } : enableAudio) : false,
