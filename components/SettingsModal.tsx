@@ -162,11 +162,16 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             <p className="text-xs text-slate-500 mt-1">This removes all incomplete student screening data saved on this device. Submitted data is not affected.</p>
           </div>
 
-          {/* AI Provider Configuration */}
-          <div className="pt-3 border-t border-gray-200">
+          {/* AI Provider Configuration - Enhanced */}
+          <div className="pt-3 border-t border-gray-200" style={{backgroundColor: '#f8f9fa'}}>
             <h3 className="text-md font-medium text-slate-700 mb-3 flex items-center gap-2">
               <FaBrain className="text-blue-600" /> AI Provider Configuration
             </h3>
+
+            {/* Debug info */}
+            <div className="text-xs text-gray-500 mb-2">
+              Current Provider: {selectedAIProvider} | API Key: {apiKey ? 'Set' : 'Not Set'}
+            </div>
 
             {/* AI Provider Selection */}
             <div className="mb-4">
